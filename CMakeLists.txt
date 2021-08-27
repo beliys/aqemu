@@ -258,6 +258,7 @@ ENDIF( NOT WITHOUT_EMBEDDED_DISPLAY )
 # Install files
 INSTALL( TARGETS aqemu DESTINATION bin )
 
+FILE( GLOB qm_files "${CMAKE_BINARY_DIR}/*.qm" )
 INSTALL( FILES ${qm_files} DESTINATION share/aqemu )
 
 FILE( GLOB os_icons "${CMAKE_CURRENT_SOURCE_DIR}/resources/os_icons/*.*" )
