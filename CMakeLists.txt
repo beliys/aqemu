@@ -172,7 +172,7 @@ SET( aqemu_qrc
 SET( aqemu_man_page
     resources/docs/aqemu.1 )
 
-SET( resources/translations
+SET( translations
      resources/translations/German.ts
      resources/translations/Russian.ts
      resources/translations/Ukrainian.ts
