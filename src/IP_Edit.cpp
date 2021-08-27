@@ -152,7 +152,7 @@ IP_Edit::IP_Edit(QWidget *parent) :
     p2->setMaximumWidth(width);
     p3->setMaximumWidth(width);
     p4->setMaximumWidth(width);
-    
+
     lines.append(p1);
     lines.append(p2);
     lines.append(p3);
@@ -210,4 +210,3 @@ QString IP_Edit::text()
 {
     return p1->text()+"."+p2->text()+"."+p3->text()+"."+p4->text();
 }
-

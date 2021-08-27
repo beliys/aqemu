@@ -72,4 +72,3 @@ class IP_Edit : public QFrame
 };
 
 #endif
-

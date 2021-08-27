@@ -33,25 +33,25 @@ class Device_Manager_Widget;
 class Folder_Sharing_Widget: public QWidget
 {
 	Q_OBJECT
-	
+
 	public:
 		explicit Folder_Sharing_Widget( QWidget *parent = 0 );
 		~Folder_Sharing_Widget();
 		void Set_VM( const Virtual_Machine &vm );
-		
+
 		void Set_Enabled( bool on );
-		
+
 		QList<VM_Shared_Folder> Shared_Folders;
 
         void syncLayout(Device_Manager_Widget*);
-		
+
 	public slots:
 		void Update_Enabled_Actions();
 		void Update_List_Mode();
-		
+
 	signals:
 		void Folder_Changed();
-	
+
 	private slots:
 		// For Context Menu
 		void on_Folders_List_customContextMenuRequested( const QPoint &pos );
@@ -64,12 +64,12 @@ class Folder_Sharing_Widget: public QWidget
 		void on_actionRemove_triggered();
 		void on_actionIcon_Mode_triggered();
 		void on_actionList_Mode_triggered();
-		
+
 		void Update_Icons();
-		
+
 	private:
 		bool Enabled;
-		
+
 		//Properties_Window *pw;
 		Ui::Folder_Sharing_Widget ui;
 		QMenu *Context_Menu;

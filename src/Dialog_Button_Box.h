@@ -51,5 +51,3 @@ class Dialog_Button_Box : public QDialogButtonBox
 };
 
 #endif
-
-

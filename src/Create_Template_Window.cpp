@@ -32,7 +32,7 @@ Create_Template_Window::Create_Template_Window( QWidget *parent )
 	: QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
 	ui.Edit_Template_Folder->setText( QDir::toNativeSeparators(Settings.value("VM_Directory","").toString() + "/os_templates/") );
 
     ui.Edit_Template_Name->setFocus();
@@ -48,7 +48,7 @@ void Create_Template_Window::on_TB_VM_File_Browse_clicked()
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Open VM File"),
 													 QDir::toNativeSeparators(Settings.value("VM_Directory","").toString() + "/os_templates/"),
 													 tr("AQEMU VM Files (*.aqemu)") );
-	
+
 	if( ! fileName.isEmpty() )
 		ui.Edit_VM_File->setText( QDir::toNativeSeparators(fileName) );
 }
@@ -58,7 +58,7 @@ void Create_Template_Window::on_TB_Template_Folder_Browse_clicked()
 	QString fileName = QFileDialog::getExistingDirectory( this,tr("Select Template Folder"),
 														  Get_Last_Dir_Path(ui.Edit_Template_Folder->text()),
 														  QFileDialog::ShowDirsOnly );
-	
+
 	if( ! fileName.isEmpty() )
 		ui.Edit_Template_Folder->setText( QDir::toNativeSeparators(fileName) );
 }
@@ -72,36 +72,36 @@ void Create_Template_Window::on_Button_Create_clicked()
 						   tr("Template Name is Empty!") );
 		return;
 	}
-	
+
 	if( ! Name_is_Unique() )
 	{
 		AQWarning( "Create_Template_Window::on_Button_Create_clicked()",
 				   "Template Name Not Unique!" );
 		return;
 	}
-	
+
 	if( ! QFile::exists(ui.Edit_VM_File->text()) )
 	{
 		AQGraphic_Warning( tr("Warning!"),
 						   tr("VM file doesn't exist!") );
 		return;
 	}
-	
+
 	if( ! QFile::exists(ui.Edit_Template_Folder->text()) )
 	{
 		AQGraphic_Warning( tr("Warning!"),
 						   tr("Cannot Locate Template Folder!") );
 		return;
 	}
-	
+
 	if( ui.Edit_Template_Folder->text().at(ui.Edit_Template_Folder->text().count()-1) != '/' )
 	{
 		ui.Edit_Template_Folder->setText( QDir::toNativeSeparators(ui.Edit_Template_Folder->text() + "/") );
 	}
-	
+
 	// All OK. Creating new template
 	Virtual_Machine *tmp_vm = new Virtual_Machine();
-	
+
 	if( ! tmp_vm->Load_VM(ui.Edit_VM_File->text()) )
 	{
 		AQGraphic_Warning( tr("Error!"),
@@ -109,36 +109,36 @@ void Create_Template_Window::on_Button_Create_clicked()
 		delete tmp_vm;
 		return;
 	}
-	
+
 	Template_Options tmp_options = Template_Save_Default;
-	
+
 	if( ui.CH_FDD_CD->isChecked() )
 	{
 		tmp_options = tmp_options | Template_Save_FDD_CD;
 	}
-	
+
 	if( ui.CH_HDD->isChecked() )
 	{
 		tmp_options = tmp_options | Template_Save_HDD;
 	}
-	
+
 	if( ui.CH_Network->isChecked() )
 	{
 		tmp_options = tmp_options | Template_Save_Network;
 	}
-	
+
 	if( ui.CH_Ports->isChecked() )
 	{
 		tmp_options = tmp_options | Template_Save_Ports;
 	}
-	
+
 	// Create FS Valid File Name
 	QString new_template_name = ui.Edit_Template_Name->text();
-	
+
 	QRegExp VM_Name_Val = QRegExp( "[^a-zA-Z0-9_]" );
 	new_template_name = new_template_name.replace( VM_Name_Val, "_" );
 	new_template_name = new_template_name.replace( "__", "_" );
-	
+
 	if( ! tmp_vm->Create_Template(ui.Edit_Template_Folder->text() +
 		new_template_name + ".aqvmt",
 		ui.Edit_Template_Name->text(), tmp_options ) )
@@ -148,9 +148,9 @@ void Create_Template_Window::on_Button_Create_clicked()
 		delete tmp_vm;
 		return;
 	}
-	
+
 	delete tmp_vm;
-	
+
 	accept();
 }
 
@@ -160,24 +160,24 @@ bool Create_Template_Window::Name_is_Unique()
 		ui.Edit_Template_Folder->text() == QDir::toNativeSeparators(Settings.value("VM_Directory", "").toString() + "/os_templates/") )
 	{
 		List_Templates = Get_Templates_List();
-		
+
 		for( int ix = 0; ix < List_Templates.count(); ++ix )
 		{
 			QFileInfo tmp_info = QFileInfo( List_Templates[ix] );
-			
+
 			// Create FS Valid File Name
 			QString new_template_name = ui.Edit_Template_Name->text();
-	
+
 			QRegExp VM_Name_Val = QRegExp( "[^a-zA-Z0-9_]" );
 			new_template_name = new_template_name.replace( VM_Name_Val, "_" );
 			new_template_name = new_template_name.replace( "__", "_" );
-			
+
 			if( tmp_info.completeBaseName() == new_template_name )
 			{
 				int mes_ret = QMessageBox::question( this, tr("Replace"),
 						tr("Your template name is already used! Do you want replace previous template?"),
 						QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-				
+
 				if( mes_ret == QMessageBox::Yes )
 				{
 					return true;
@@ -188,7 +188,7 @@ bool Create_Template_Window::Name_is_Unique()
 				}
 			}
 		}
-		
+
 		return true;
 	}
 	else
@@ -199,7 +199,7 @@ bool Create_Template_Window::Name_is_Unique()
 			int mes_ret = QMessageBox::question( this, tr("Replace"),
 					tr("You Name For Template in Not Unique! Replace Previous Template?"),
 					QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-				
+
 			if( mes_ret == QMessageBox::Yes )
 			{
 				return true;

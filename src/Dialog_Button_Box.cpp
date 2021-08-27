@@ -54,4 +54,3 @@ void Dialog_Button_Box::showEvent(QShowEvent* e)
 
     e->accept();
 }
-

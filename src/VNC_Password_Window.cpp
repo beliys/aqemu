@@ -43,13 +43,12 @@ void VNC_Password_Window::done(int r)
 		    AQGraphic_Warning( tr("Warning"), tr("Password is Empty!") );
 		    return;
 	    }
-	
+
 	    if( ui.Edit_Password->text() != ui.Edit_Confirm_Password->text() )
 	    {
 		    AQGraphic_Warning( tr("Warning"), tr("Password Not Confirmed!") );
 		    return;
 	    }
     }
-    QDialog::done(r);	
+    QDialog::done(r);
 }
-

@@ -50,9 +50,9 @@ Port of AQEMU 0.8.2 from Qt4 to Qt5.
 
 Use cmake to build.
 
-Dependencies: 
+Dependencies:
  - Qt5Core
- - Qt5Widgets 
+ - Qt5Widgets
  - Qt5Network
  - Qt5Test
  - Qt5PrintSupport
@@ -64,4 +64,3 @@ Dependencies:
 
 As an alternative to cmake the meson build system is also supported:
 https://github.com/mesonbuild/meson
-

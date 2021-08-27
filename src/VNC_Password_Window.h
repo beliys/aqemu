@@ -28,14 +28,14 @@
 class VNC_Password_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		VNC_Password_Window( QWidget *parent = 0 );
 		QString Get_Password() const;
-		
+
 	private slots:
 		void done(int);
-	
+
 	private:
 		Ui::VNC_Password_Window ui;
 };

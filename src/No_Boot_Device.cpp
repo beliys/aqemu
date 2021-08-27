@@ -100,4 +100,3 @@ void No_Boot_Device::Kernel_Boot()
     mw->Media_Settings_Widget->setCurrentIndex(3);
     accept();
 }
-

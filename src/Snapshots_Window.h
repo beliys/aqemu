@@ -30,23 +30,23 @@
 class Snapshots_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Snapshots_Window( QWidget *parent = 0 );
 		void Set_VM( Virtual_Machine *vm );
-		
+
 	private slots:
 		void on_Snapshots_Tree_itemSelectionChanged();
-		
+
 		void on_Button_Create_clicked();
 		void on_Button_Delete_clicked();
 		void on_Button_Start_clicked();
 		void on_Button_Properties_clicked();
 		void on_Button_Update_clicked();
-		
+
 	private:
 		bool Update_Info();
-		
+
 		Ui::Snapshots_Window ui;
 		Virtual_Machine *Current_VM;
 		QSettings Settings;

@@ -18,7 +18,7 @@ OPTION( INSTALL_MAN "Install MAN page file" "ON" )
 IF( DEBUG )
 	# Verbose compiler output
 	SET( CMAKE_VERBOSE_MAKEFILE ON )
-	
+
 	# GCC
 	ADD_DEFINITIONS( -Wall -g )
 ENDIF( DEBUG )
@@ -164,7 +164,7 @@ SET( aqemu_ui
 	src/VNC_Password_Window.ui
 )
 
-SET( aqemu_qrc 
+SET( aqemu_qrc
     resources/shared_images.qrc
     resources/icons.qrc
 )
@@ -172,7 +172,7 @@ SET( aqemu_qrc
 SET( aqemu_man_page
     resources/docs/aqemu.1 )
 
-SET( translations 
+SET( translations
      translations/German.ts
      transtations/Russian.ts
      translations/Ukrainian.ts
@@ -201,13 +201,13 @@ FIND_PACKAGE( Qt5DBus )
 # Embedded VNC display
 IF( NOT WITHOUT_EMBEDDED_DISPLAY )
 	FIND_PACKAGE( LibVNCServer REQUIRED )
-	
+
 	SET( aqemu_headers ${aqemu_headers} src/Embedded_Display/Machine_View.h src/Embedded_Display/remoteview.h
 										src/Embedded_Display/vncclientthread.h src/Embedded_Display/vncview.h )
-	
+
 	SET( aqemu_sources ${aqemu_sources} src/Embedded_Display/Machine_View.cpp src/Embedded_Display/remoteview.cpp
 										src/Embedded_Display/vncclientthread.cpp src/Embedded_Display/vncview.cpp )
-	
+
 	ADD_DEFINITIONS( -DVNC_DISPLAY -DQTONLY )
 ENDIF( NOT WITHOUT_EMBEDDED_DISPLAY )
 
@@ -280,11 +280,11 @@ MACRO( create_docs _sources )
 	FOREACH( curFile ${ARGN} )
 		GET_FILENAME_COMPONENT( _in ${curFile} ABSOLUTE )
 		GET_FILENAME_COMPONENT( _basename ${curFile} NAME_WE )
-		
+
 		SET( _out ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}.bz2 )
-		
+
 		ADD_CUSTOM_COMMAND( OUTPUT ${_out} COMMAND bzip2 ARGS -zkf9 ${_in} DEPENDS ${_in} )
-		
+
 		SET( ${_sources} ${${_sources}} ${_out} )
 	ENDFOREACH( curFile )
 ENDMACRO( create_docs )
@@ -312,24 +312,24 @@ IF( INSTALL_MAN )
 	IF( COMPRESSOR_SUFFIX )
 		# Find gzip, bzip or lzma
 		FIND_PROGRAM( COMPRESSOR_BIN NAMES ${MAN_PAGE_COMPRESSOR} )
-		
+
 		IF( ${COMPRESSOR_BIN} MATCHES COMPRESSOR_BIN-NOTFOUND )
 			MESSAGE( STATUS "${MAN_PAGE_COMPRESSOR} - NOT FOUND!" )
 			MESSAGE( FATAL_ERROR "Please install ${MAN_PAGE_COMPRESSOR} package!" )
 		ENDIF( ${COMPRESSOR_BIN} MATCHES COMPRESSOR_BIN-NOTFOUND )
-		
+
 		# Compress
 		EXECUTE_PROCESS( OUTPUT_FILE ${aqemu_man_page}.${COMPRESSOR_SUFFIX}
 						COMMAND "${COMPRESSOR_BIN}" -9
 						INPUT_FILE ${aqemu_man_page}
 						WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} )
-		
+
 		# Install MAN
 		INSTALL( FILES ${CMAKE_SOURCE_DIR}/${aqemu_man_page}.${COMPRESSOR_SUFFIX} DESTINATION share/man/man1 )
 	ELSE( COMPRESSOR_SUFFIX )
 		MESSAGE( STATUS "MAN_PAGE_COMPRESSOR flag not set. Available values: gzip, bzip2, lzma" )
 		MESSAGE( STATUS "Will be installed not compressed MAN pages" )
-		
+
 		INSTALL( FILES ${CMAKE_SOURCE_DIR}/${aqemu_man_page} DESTINATION share/man/man1 )
 	ENDIF( COMPRESSOR_SUFFIX )
 ENDIF( INSTALL_MAN )

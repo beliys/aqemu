@@ -57,4 +57,3 @@ Highlighted_Label::Highlighted_Label(QWidget* parent) : QLabel(parent)
 Highlighted_Label::Highlighted_Label()
 {
 }
-

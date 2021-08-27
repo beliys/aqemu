@@ -156,7 +156,7 @@ Main_Window::Main_Window( QWidget *parent )
     Media_Settings_Widget = new Settings_Widget( ui.TabWidget_Media, QBoxLayout::LeftToRight, true );
     Media_Settings_Widget->setIconSize(QSize(32,32));
     Media_Settings_Widget->addToGroup("Main");
-	
+
 
     //// code to sync sizes of widgets in Device Manager, Folder Sharing and Ports Tab Widget
     Folder_Sharing->syncLayout(Dev_Manager);
@@ -3687,7 +3687,7 @@ void Main_Window::on_actionCreate_Shell_Script_triggered()
 
 		QTextStream out( &scriptFile );
 		out << script_code << " \"$@\"\n";
-		
+
 		// Set File Permissions
 		scriptFile.setPermissions( scriptFile.permissions() | QFile::ExeOwner | QFile::ExeUser );
 	}

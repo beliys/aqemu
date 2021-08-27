@@ -19,10 +19,10 @@
 #ifdef DOCOPT_HEADER_ONLY
     #define DOCOPT_INLINE inline
     #define DOCOPT_API
-#else 
+#else
     #define DOCOPT_INLINE
 
-    // With Microsoft Visual Studio, export certain symbols so they 
+    // With Microsoft Visual Studio, export certain symbols so they
     // are available to users of docopt.dll (shared library). The DOCOPT_DLL
     // macro should be defined if building a DLL (with Visual Studio),
     // and by clients using the DLL. The CMakeLists.txt and the
@@ -42,19 +42,19 @@
 #endif
 
 namespace docopt {
-	
+
 	// Usage string could not be parsed (ie, the developer did something wrong)
 	struct DocoptLanguageError : std::runtime_error { using runtime_error::runtime_error; };
-	
+
 	// Arguments passed by user were incorrect (ie, developer was good, user is wrong)
 	struct DocoptArgumentError : std::runtime_error { using runtime_error::runtime_error; };
-	
+
 	// Arguments contained '--help' and parsing was aborted early
 	struct DocoptExitHelp : std::runtime_error { DocoptExitHelp() : std::runtime_error("Docopt --help argument encountered"){} };
 
 	// Arguments contained '--version' and parsing was aborted early
 	struct DocoptExitVersion : std::runtime_error { DocoptExitVersion() : std::runtime_error("Docopt --version argument encountered") {} };
-	
+
 	/// Parse user options from the given option string.
 	///
 	/// @param doc   The usage string
@@ -73,7 +73,7 @@ namespace docopt {
 					    bool help = true,
 					    bool version = true,
 					    bool options_first = false);
-	
+
 	/// Parse user options from the given string, and exit appropriately
 	///
 	/// Calls 'docopt_parse' and will terminate the program if any of the exceptions above occur:

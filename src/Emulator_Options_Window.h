@@ -30,15 +30,15 @@
 class Emulator_Options_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Emulator_Options_Window( QWidget *parent = 0 );
-		
+
 		Emulator Get_Emulator() const;
 		void Set_Emulator( const Emulator &emul );
-		
+
 		void Set_All_Emulators_Names( const QStringList &allNames );
-		
+
 	private slots:
 		void done(int);
 		void on_Edit_Name_textChanged();
@@ -48,13 +48,13 @@ class Emulator_Options_Window: public QDialog
 		void on_Table_Systems_itemDoubleClicked( QTableWidgetItem *item );
 		void on_RB_QEMU_toggled( bool checked );
 		void on_RB_KVM_toggled( bool checked );
-		
+
 		bool Name_Valid( const QString &name );
 		void Update_Emulator();
-		
+
 	private:
 		Ui::Emulator_Options_Window ui;
-		
+
 		QStringList All_Emulators_Names;
 		QSettings Settings;
 		Emulator Current_Emulator;

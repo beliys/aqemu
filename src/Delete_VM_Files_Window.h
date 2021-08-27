@@ -38,16 +38,16 @@ class QHeaderView;
 class Delete_VM_Files_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Delete_VM_Files_Window( QWidget *parent = 0 );
 		Delete_VM_Files_Window( Virtual_Machine *vm, QWidget *parent = 0 );
         ~Delete_VM_Files_Window();
 		void Set_VM( Virtual_Machine *vm );
-	
+
     private slots:
 		void on_RB_Show_HDD_toggled( bool checked );
-		
+
         void Start_Page();
         void Selected_Files_Page();
         void Selected_Only_VM_Page();
@@ -55,7 +55,7 @@ class Delete_VM_Files_Window: public QDialog
 		bool Path_Valid( const QString &path );
 		void Clear_List();
         void done(int);
-	
+
 	private:
         bool Do_Delete();
         void init();

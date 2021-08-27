@@ -28,27 +28,27 @@ Add_Port_Window::Add_Port_Window( QWidget *parent )
 	: QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
 	#ifdef Q_OS_UNIX
 	ui.RB_stdio->setEnabled( true );
 	#endif
-	
+
 	#ifdef Q_OS_LINUX
 	ui.RB_pty->setEnabled( true );
 	ui.RB_Dev->setEnabled( true );
 	#endif
-	
+
 	#ifdef Q_OS_WIN32
 	ui.RB_COM->setEnabled( true );
 	#endif
-	
+
 	Connect_Slots();
 }
 
 VM_Port Add_Port_Window::Get_Port() const
 {
 	VM_Port port;
-	
+
 	if( ui.RB_Default->isChecked() ) port.Set_Port_Redirection( VM::PR_Default );
 	else if( ui.RB_vc->isChecked() ) port.Set_Port_Redirection( VM::PR_vc );
 	else if( ui.RB_pty->isChecked() ) port.Set_Port_Redirection( VM::PR_pty );
@@ -71,10 +71,10 @@ VM_Port Add_Port_Window::Get_Port() const
 		AQError( "VM_Port Add_Port_Window::Get_Port() const",
 				 "Invalid Port Redirection!" );
 	}
-	
+
 	// Set Parametrs
 	port.Set_Parametrs_Line( ui.Edit_Args->text() );
-	
+
 	return port;
 }
 
@@ -85,72 +85,72 @@ void Add_Port_Window::Set_Port( const VM_Port &port )
 		case VM::PR_vc:
 			ui.RB_vc->setChecked( true );
 			break;
-			
+
 		case VM::PR_pty:
 			ui.RB_pty->setChecked( true );
 			break;
-			
+
 		case VM::PR_none:
 			ui.RB_none->setChecked( true );
 			break;
-			
+
 		case VM::PR_null:
 			ui.RB_null->setChecked( true );
 			break;
-			
+
 		case VM::PR_dev:
 			ui.RB_Dev->setChecked( true );
 			break;
-			
+
 		case VM::PR_file:
 			ui.RB_File->setChecked( true );
 			break;
-			
+
 		case VM::PR_stdio:
 			ui.RB_stdio->setChecked( true );
 			break;
-			
+
 		case VM::PR_pipe:
 			ui.RB_Pipe->setChecked( true );
 			break;
-			
+
 		case VM::PR_udp:
 			ui.RB_UDP->setChecked( true );
 			break;
-			
+
 		case VM::PR_tcp:
 			ui.RB_TCP->setChecked( true );
 			break;
-			
+
 		case VM::PR_telnet:
 			ui.RB_Telnet->setChecked( true );
 			break;
-			
+
 		case VM::PR_unix:
 			ui.RB_Unix->setChecked( true );
 			break;
-			
+
 		case VM::PR_com:
 			ui.RB_COM->setChecked( true );
 			break;
-			
+
 		case VM::PR_msmouse:
 			ui.RB_msmouse->setChecked( true );
 			break;
-			
+
 		case VM::PR_mon:
 			ui.RB_mon->setChecked( true );
 			break;
-			
+
 		case VM::PR_braille:
 			ui.RB_braille->setChecked( true );
 			break;
-			
+
 		default:
 			ui.RB_Default->setChecked( true );
 			break;
 	}
-	
+
 	ui.Edit_Args->setText( port.Get_Parametrs_Line() );
 }
 
@@ -180,7 +180,7 @@ void Add_Port_Window::on_TB_Browse_clicked()
 	QString po = QFileDialog::getOpenFileName( this, tr("Open File"),
 											   Get_Last_Dir_Path(ui.Edit_Args->text()),
 											   tr("All Files (*)") );
-	
+
 	if( ! po.isEmpty() )
 		ui.Edit_Args->setText( QDir::toNativeSeparators(po) );
 }
@@ -189,7 +189,7 @@ void Add_Port_Window::Show_Arg_Help()
 {
 	// FIXME strings
 	QStringList argsHelp;
-	
+
 	argsHelp << tr( "" );
 	argsHelp << tr( "Optionally width and height can be given in pixel with\n800x600\nIt is also possible to specify width or height in characters:\n80Cx24C" );
 	argsHelp << tr( "[Linux only] Pseudo TTY (a new PTY is automatically allocated)" );
@@ -207,7 +207,7 @@ void Add_Port_Window::Show_Arg_Help()
 	argsHelp << tr( "Three button serial mouse. Configure the guest to use Microsoft protocol." );
 	argsHelp << tr( "mon:dev_string\nThis is a special option to allow the monitor to be multiplexed onto another serial port." );
 	argsHelp << tr( "Braille device.\nThis will use BrlAPI to display the braille output on a real or fake device." );
-	
+
 	if( ui.RB_Default->isChecked() ) ui.Label_Help->setText( argsHelp[0] );
 	else if( ui.RB_vc->isChecked() ) ui.Label_Help->setText( argsHelp[1] );
 	else if( ui.RB_pty->isChecked() ) ui.Label_Help->setText( argsHelp[2] );
@@ -228,7 +228,7 @@ void Add_Port_Window::Show_Arg_Help()
 	else
 	{
 		ui.Label_Help->setText( "" );
-		
+
 		AQError( "void Add_Port_Window::Show_Arg_Help()",
 				 "Invalid Port Redirection!" );
 	}

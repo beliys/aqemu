@@ -30,7 +30,7 @@ class No_Boot_Device: public QDialog
 {
 
 	Q_OBJECT
-	
+
 	public:
 		No_Boot_Device( QWidget *parent = 0 );
 		~No_Boot_Device();
@@ -48,4 +48,3 @@ class No_Boot_Device: public QDialog
 };
 
 #endif
-

@@ -33,11 +33,11 @@ class Settings_Widget;
 class Advanced_Settings_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Advanced_Settings_Window( QWidget *parent = 0 );
         ~Advanced_Settings_Window();
-	
+
 	public slots:
 		void done(int);
 
@@ -50,13 +50,13 @@ class Advanced_Settings_Window: public QDialog
 		void VNC_Warning( bool state );
 		void Load_Templates();
         ///
-		
+
 		void on_TB_Browse_Before_clicked();
 		void on_TB_Browse_After_clicked();
 		void on_TB_Log_File_clicked();
 		void on_TB_Screenshot_Folder_clicked();
 		void on_TB_QEMU_IMG_Browse_clicked();
-		
+
 		void on_TB_Add_Emulator_clicked();
 		void on_TB_Delete_Emulator_clicked();
 		void on_TB_Edit_Emulator_clicked();
@@ -66,18 +66,18 @@ class Advanced_Settings_Window: public QDialog
 		void on_Button_CDROM_Add_clicked();
 		void on_Button_CDROM_Edit_clicked();
 		void on_Button_CDROM_Delete_clicked();
-		
+
 		bool Load_Emulators_Info();
 		bool Save_Emulators_Info();
 		void Update_Emulators_Info();
-	
+
 		QStringList Get_All_Emulators_Names() const;
-		
+
 	private:
 		Ui::Advanced_Settings_Window ui;
 		QSettings Settings;
         Settings_Widget* settings_widget;
-		
+
 		QList<Emulator> Emulators;
 };
 

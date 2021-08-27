@@ -30,17 +30,17 @@
 class Old_Network_Widget: public QWidget
 {
 	Q_OBJECT
-	
+
 	public:
 		Old_Network_Widget( QWidget *parent = 0 );
-		
+
 		bool Get_Network_Cards( QList<VM_Net_Card> &cards );
 		void Set_Network_Cards( const QList<VM_Net_Card> &cards );
-		
+
 		void Set_Network_Card_Models( const QList<Device_Map> &models );
-		
+
 		void Set_Enabled( bool on );
-		
+
 	private slots:
 		void Connect_Slots();
 		void Disconnect_Slots();
@@ -61,13 +61,13 @@ class Old_Network_Widget: public QWidget
 		void on_SB_File_Descriptor_valueChanged( int i );
 		void on_TB_Generate_New_MAC_clicked();
 		void on_TB_Browse_TUN_Script_clicked();
-		
+
 		void Set_Net_Card_To_Ui( const VM_Net_Card &card );
 		bool Net_Card_is_Valid( int index );
-	
+
 	signals:
 		void Changed();
-		
+
 	private:
 		void hide_Show_Disabled_Enabled_Options();
 

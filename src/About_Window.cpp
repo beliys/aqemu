@@ -33,7 +33,7 @@
 About_Window::About_Window( QWidget *parent ): QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
 	// Minimum Size
 	resize( width(), minimumSizeHint().height() );
 
@@ -58,7 +58,7 @@ About_Window::About_Window( QWidget *parent ): QDialog( parent )
 	"<br>Alexander Romanov (aka romale) - Testing, New Ideas and Other Help\n"
 	"<br>Timothy Redaelli - Patch for CMake\n"
 	"<br>Pavel Serebryakov (aka Kronoph) - Correcting English translation\n"
-	
+
 	"<br><br><b>Special thanks:</b>\n"
 	"<br>Sergey Sinitsa (aka sin)\n"
 	"<br>Grigory Pulyaev (aka Rodegast)\n"
@@ -66,24 +66,24 @@ About_Window::About_Window( QWidget *parent ): QDialog( parent )
 	"<br>Mihail Parshin (aka Skeeper)\n"
 	"<br>Garret Acott (aka gacott)\n"
 	"<br>Damir Vafin (aka Denver-22)\n"
-	
+
 	"<br><br><b>Thanks all www.nclug.ru group for testing and suggestions for improvement.</b>\n"
-	
+
 	"<br><br><b>AQEMU used code from QtEMU and Krdc thanks all developers:</b>\n"
 	"<br>Tim Jansen (tim@tjansen.de)\n"
 	"<br>Urs Wolfer (uwolfer@kde.org)\n"
 	"<br>Ben Klopfenstein (benklop@gmail.com)\n"
-	
+
 	"<br><br><b>Icons:</b>\n"
 	"<br>Oxygen - Icon Theme From Oxygen Team\n") );
-	
+
 	// Load Links
 	QSettings settings;
 	QFileInfo logFileDir( settings.fileName() );
 	linksFilePath = QDir::toNativeSeparators( logFileDir.absolutePath() + "/links.html" );
-	
+
 	Show_Links_File();
-    
+
     ui.About_Text->setText(ui.About_Text->text().replace("$VERSION_DATE_DO_NOT_TRANSLATE",QString(CURRENT_AQEMU_VERSION)+" ("+QString(CURRENT_AQEMU_RELEASE_DATE)+")"));
 
     ui.Tabs->setCurrentIndex(0);
@@ -124,4 +124,3 @@ void About_Window::Show_Links_File()
 		ui.Links_View->setHtml( all );
 	}
 }
-

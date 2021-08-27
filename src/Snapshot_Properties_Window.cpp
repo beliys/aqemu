@@ -61,4 +61,3 @@ void Snapshot_Properties_Window::done(int r)
     }
     QDialog::done(r);
 }
-

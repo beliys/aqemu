@@ -35,7 +35,7 @@
 
 My_List_Widget::My_List_Widget(QWidget* parent) : QListWidget(parent)
 {
-  
+
 }
 
 void My_List_Widget::wheelEvent(QWheelEvent* e)
@@ -57,7 +57,7 @@ void My_List_Widget::wheelEvent(QWheelEvent* e)
         e->accept();
     }
 }
-                
+
 Settings_Widget::Settings_Widget(QTabWidget* tab_widget, QBoxLayout::Direction dir, bool erase_margins, bool erase_parent_margins)
 {
     QBoxLayout *l = nullptr;
@@ -78,7 +78,7 @@ Settings_Widget::Settings_Widget(QTabWidget* tab_widget, QBoxLayout::Direction d
         l = new QBoxLayout(QBoxLayout::TopToBottom);
 
         //list->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
-        //list->setMaximumHeight(60); //FIXME: dynamic would be preferred 
+        //list->setMaximumHeight(60); //FIXME: dynamic would be preferred
 
         /*auto app = dynamic_cast<QApplication*>(QApplication::instance());
         if ( app != nullptr )
@@ -113,7 +113,7 @@ Settings_Widget::Settings_Widget(QTabWidget* tab_widget, QBoxLayout::Direction d
 
     l->addWidget(splitter);
 
-    if ( erase_margins ) 
+    if ( erase_margins )
         l->setContentsMargins(0,0,0,0);
 
     setLayout(l);
@@ -136,7 +136,7 @@ Settings_Widget::Settings_Widget(QTabWidget* tab_widget, QBoxLayout::Direction d
 
     if ( erase_margins && erase_parent_margins )
         tab_widget->parentWidget()->layout()->setContentsMargins(0,0,0,0);
-    
+
 
     if ( dir != QBoxLayout::TopToBottom )
     {
@@ -205,7 +205,7 @@ void Settings_Widget::syncGroupIconSizes(QString g)
                 w = l.sizeHint().width() + 20;
             }
 
-            
+
             if ( max_width.count() < j + 1 )
             {
                 //index number not in list
@@ -217,7 +217,7 @@ void Settings_Widget::syncGroupIconSizes(QString g)
                 if ( w > max_width.at(j) )
                     max_width.replace(j, w);
             }
-            
+
         }
     }
 
@@ -254,7 +254,7 @@ void Settings_Widget::syncGroupIconSizes(QString g)
         sw->stack->setMinimumWidth(min_total_list_width);
     }
 
-    
+
 }
 
 void Settings_Widget::setIconSize(QSize s)
@@ -269,4 +269,3 @@ Settings_Widget::~Settings_Widget()
 
     delete splitter;
 }
-

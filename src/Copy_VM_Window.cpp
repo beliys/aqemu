@@ -30,7 +30,7 @@ Copy_VM_Window::Copy_VM_Window( QWidget *parent )
 	: QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
     All_Machine_Names.clear();
 
     ui.buttonBox->button(QDialogButtonBox::Ok)->setEnabled( false );
@@ -81,7 +81,7 @@ void Copy_VM_Window::done(int r)
 			    return;
 		    }
 	    }
-	
+
         // OK, New Name Unique
     }
     QDialog::done(r);

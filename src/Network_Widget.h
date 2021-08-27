@@ -29,22 +29,22 @@
 class Network_Widget: public QWidget
 {
 	Q_OBJECT
-	
+
 	public:
 		Network_Widget( QWidget *parent = 0 );
-		
+
 		bool Get_Network_Cards( QList<VM_Net_Card_Native> &cards );
 		void Set_Network_Cards( const QList<VM_Net_Card_Native> &cards );
-		
+
 		void Set_Network_Card_Models( const QList<Device_Map> &models );
 		void Set_Devices( const Available_Devices &devices );
-		
+
 		void Set_Enabled( bool on );
-		
+
 	private slots:
 		void Connect_Slots();
 		void Disconnect_Slots();
-		
+
 		void on_Button_Add_clicked();
 		void on_Button_Delete_clicked();
 		void on_Items_List_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
@@ -58,31 +58,31 @@ class Network_Widget: public QWidget
 		void on_TB_Browse_smb_clicked();
 		void on_CH_smb_toggled( bool checked );
 		void Update_Card_Item();
-		
+
 	private:
 		VM_Net_Card_Native Get_Net_Card_From_Ui() const;
 		void Set_Net_Card_To_Ui( const VM_Net_Card_Native &card );
-		
+
 		bool Net_Card_is_Valid();
 		bool No_File_Found( const QString &name, const QString &path );
-		
+
 		QString Get_Items_Count( VM::Network_Mode_Nativ type );
-		
+
 		void Enable_Buttons( bool add, bool del );
-		
+
 	signals:
 		void Changed();
-		
+
 	private:
 		Ui::Network_Widget ui;
 		QList<VM_Net_Card_Native> Network_Cards;
 		QStringList Card_Models_QEMU_Name;
 		int nic, user, chanel, bridge, tap, socket, multi, vde, dump;
-		
+
 		bool PSO_Net_name;
 		bool PSO_Net_addr;
 		bool PSO_Net_vectors;
-		
+
 		bool PSO_Net_net;
 		bool PSO_Net_host;
 		bool PSO_Net_restrict;
@@ -93,7 +93,7 @@ class Network_Widget: public QWidget
 		bool PSO_Net_smb;
 		bool PSO_Net_hostfwd;
 		bool PSO_Net_guestfwd;
-		
+
 		bool PSO_Net_ifname;
 		bool PSO_Net_bridge;
 		bool PSO_Net_script;
@@ -103,17 +103,17 @@ class Network_Widget: public QWidget
 		bool PSO_Net_vnet_hdr;
 		bool PSO_Net_vhost;
 		bool PSO_Net_vhostfd;
-		
+
 		bool PSO_Net_listen;
 		bool PSO_Net_connect;
-		
+
 		bool PSO_Net_mcast;
-		
+
 		bool PSO_Net_sock;
 		bool PSO_Net_port;
 		bool PSO_Net_group;
 		bool PSO_Net_mode;
-		
+
 		bool PSO_Net_file;
 		bool PSO_Net_len;
 };

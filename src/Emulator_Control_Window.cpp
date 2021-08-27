@@ -49,16 +49,16 @@ Emulator_Control_Window::Emulator_Control_Window( QWidget *parent )
 	: QMainWindow( parent )
 {
 	ui.setupUi( this );
-	
+
 	First_Start = true;
 	Fullscreen_Menu_Added = false;
-	
+
 	Show_Close_Warning = true;
 	Mon_Win = new Monitor_Window();
-	
+
 	connect( ui.menuConnectNew, SIGNAL(aboutToShow()),
 			 this, SLOT(Get_Removable_Devices_List()) );
-	
+
 	// Use new removable device menu?
 	// FIXME update this settings after settings are changet
 	if( Settings.value("Use_New_Device_Changer", "no").toString() == "yes" )
@@ -72,7 +72,7 @@ void Emulator_Control_Window::Apply_Full_Size( int w, int h )
 	if( ! ui.actionDisplay_Scaling->isChecked() )
 	{
 		setMaximumSize( w, h + menuWidget()->height() );
-		
+
 		QDesktopWidget desktop;
 		if( desktop.screenGeometry(desktop.primaryScreen()).width() > w )
 			resize( w, h + menuWidget()->height() );
@@ -98,21 +98,21 @@ void Emulator_Control_Window::VM_State_Changed( Virtual_Machine *vm, VM::VM_Stat
 		case VM::VMS_Pause:
 			this->setWindowTitle( vm->Get_Machine_Name() + tr(" [Paused]") );
 			break;
-			
+
 		case VM::VMS_Saved:
 			this->setWindowTitle( vm->Get_Machine_Name() + tr(" [Saved]") );
 			break;
-			
+
 		default:
 			this->setWindowTitle( vm->Get_Machine_Name() );
-	}	
+	}
 }
 
 void Emulator_Control_Window::Get_Removable_Devices_List()
 {
 	connect( Cur_VM, SIGNAL(Ready_Removable_Devices_List()),
 			 this, SLOT(Create_Connect_Menu()) );
-	
+
 	Cur_VM->Update_Removable_Devices_List();
 }
 
@@ -120,34 +120,34 @@ void Emulator_Control_Window::Create_Connect_Menu()
 {
 	disconnect( Cur_VM, SIGNAL(Ready_Removable_Devices_List()),
 				this, SLOT(Create_Connect_Menu()) );
-	
+
 	// Get emulator answer
 	QString list = Cur_VM->Get_Removable_Devices_List();
-	
+
 	// Parse
 	QStringList devices = list.split( '\n', QString::SkipEmptyParts );
 	ui.menuConnectNew->clear();
 	Removable_Devies_Map.clear();
-	
+
 	for( int ix = 0; ix < devices.count()-1; ++ix )
 	{
 		QStringList curDev = devices[ ix ].split( ' ', QString::SkipEmptyParts );
-		
-		// Data in curDev look like this:		
+
+		// Data in curDev look like this:
 		// ide0-hd0: removable=0 io-status=ok file=/tmp/vl.0x5urG backing_file=/mnt/os/vm/winxp_empty.qcow2 ro=0 drv=qcow2 encrypted=0
 		// ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
 		// floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 		// sd0: removable=1 locked=0 tray-open=0 [not inserted]
-		
+
 		// Data valid?
 		if( curDev.count() < 5 ) continue;
-		
+
 		// It removable device?
 		if( curDev[1] != "removable=1" ) continue;
-		
+
 		// Parse name
 		QString devName = "";
-		
+
 		if( curDev[0].contains("-cd") ) // CD-ROM
 		{
 			// Create human readable id for device
@@ -158,14 +158,14 @@ void Emulator_Control_Window::Create_Connect_Menu()
 						 "Unable to match regexp! Data: " + curDev[0] );
 				continue;
 			}
-			
+
 			QStringList nameStrings = rx.capturedTexts();
 			if( nameStrings.count() != 5 )
 			{
 				AQError( "void Emulator_Control_Window::Create_Connect_Menu()",
 						 "Section CD. nameStrings.count() != 5" );
 			}
-			
+
 			// Create menu item
 			devName = QString( "CD-ROM %1 (On %2%3)" ).arg( nameStrings[4] ).arg( nameStrings[1].toUpper() ).arg( nameStrings[2] );
 			QMenu *tmpMenu = ui.menuConnectNew->addMenu( QIcon(":/cdrom.png"), devName );
@@ -193,14 +193,14 @@ void Emulator_Control_Window::Create_Connect_Menu()
 						 "Unable to match regexp! Data: " + curDev[0] );
 				continue;
 			}
-			
+
 			QStringList nameStrings = rx.capturedTexts();
 			if( nameStrings.count() != 3 )
 			{
 				AQError( "void Emulator_Control_Window::Create_Connect_Menu()",
 						 "Section SD. nameStrings.count() != 3" );
 			}
-			
+
 			// Add to menu
 			devName = "SD Card " + nameStrings[ 2 ];
 			QMenu *tmpMenu = ui.menuConnectNew->addMenu( QIcon(":/hdd.png"), devName );
@@ -210,11 +210,11 @@ void Emulator_Control_Window::Create_Connect_Menu()
 		{
 			devName = "Unknown device";
 		}
-		
+
 		// Add device line to map
 		Removable_Devies_Map[ devName ] = devices[ ix ];
 	}
-	
+
 	// If usb available for this VM add usb menu
 	if( Cur_VM->Get_USB_Ports().count() > 0 )
 	{
@@ -232,10 +232,10 @@ void Emulator_Control_Window::Create_Device_Menu()
 				 "Menu item is NULL" );
 		return;
 	}
-	
+
 	// Clear old menu
 	tmpMenu->clear();
-	
+
 	// Get map value for parse
 	QString value = Removable_Devies_Map[ tmpMenu->title() ];
 	if( value.isEmpty() )
@@ -244,25 +244,25 @@ void Emulator_Control_Window::Create_Device_Menu()
 				 "Removable device value is empty" );
 		return;
 	}
-	
+
 	// Parse line
 	QString internalDevName = QString(value).replace( QRegExp("\\:.*"), "" ); // Get device name
-	
+
 	// Get device source path
 	QString deviceSourcePath = "";
-	
+
 	int jumpSize = 5; // 5 is size of 'file='
-	
+
 	int fileIndex = value.indexOf( "backing_file=" );
 	if( fileIndex > 0 )
 		jumpSize = 13; // 13 is size of 'backing_file='
 	else
 		fileIndex = value.indexOf( "file=" );
-	
+
 	if( fileIndex > 0 )
 	{
 		fileIndex += jumpSize;
-		
+
 		// Get path
 		if( fileIndex < value.count() )
 		{
@@ -276,7 +276,7 @@ void Emulator_Control_Window::Create_Device_Menu()
 			}
 		}
 	}
-	
+
 	if( internalDevName.contains("-cd") )
 	{
 		// Add current CDROM image (If exists)
@@ -288,13 +288,13 @@ void Emulator_Control_Window::Create_Device_Menu()
 			conCdromAct->setData( internalDevName + "\n" + deviceSourcePath );
 			conCdromAct->setCheckable( true );
 			conCdromAct->setChecked( true );
-			
+
 			tmpMenu->addSeparator();
 		}
-		
+
 		// Add host devices
 		QStringList cdList = System_Info::Get_Host_CDROM_List();
-		
+
 		for( int ix = 0; ix < cdList.count(); ++ix )
 		{
 			if( cdList[ix] != deviceSourcePath )
@@ -304,12 +304,12 @@ void Emulator_Control_Window::Create_Device_Menu()
 				conCdromAct->setData( internalDevName + "\n" + cdList[ix] );
 			}
 		}
-		
+
 		if( ! cdList.isEmpty() ) tmpMenu->addSeparator();
-		
+
 		// Add recent images/devices list
 		cdList = Get_CD_Recent_Images_List();
-		
+
 		for( int ix = 0; ix < cdList.count(); ++ix )
 		{
 			if( cdList[ix] != deviceSourcePath )
@@ -320,14 +320,14 @@ void Emulator_Control_Window::Create_Device_Menu()
 				conCdromAct->setData( internalDevName + "\n" + cdList[ix] );
 			}
 		}
-		
+
 		if( ! cdList.isEmpty() ) tmpMenu->addSeparator();
-		
+
 		// Add 'Browse' menu item
 		QAction *browseAct = tmpMenu->addAction( QIcon(":/open-file.png"), "Browse...",
 												 this, SLOT(Open_Device_File()) );
 		browseAct->setData( internalDevName );
-		
+
 		// Add 'Eject' menu item
 		QAction *ejectAct = tmpMenu->addAction( QIcon(":/eject.png"), "Eject",
 												this, SLOT(Eject_Device()) );
@@ -344,13 +344,13 @@ void Emulator_Control_Window::Create_Device_Menu()
 			conFddAct->setData( internalDevName + "\n" + deviceSourcePath );
 			conFddAct->setCheckable( true );
 			conFddAct->setChecked( true );
-			
+
 			tmpMenu->addSeparator();
 		}
-		
+
 		// Add host devices
 		QStringList fddList = System_Info::Get_Host_FDD_List();
-		
+
 		for( int ix = 0; ix < fddList.count(); ++ix )
 		{
 			if( fddList[ix] != deviceSourcePath )
@@ -360,12 +360,12 @@ void Emulator_Control_Window::Create_Device_Menu()
 				conFddAct->setData( internalDevName + "\n" + fddList[ix] );
 			}
 		}
-		
+
 		if( ! fddList.isEmpty() ) tmpMenu->addSeparator();
-		
+
 		// Add recent images/devices list
 		fddList = Get_FDD_Recent_Images_List();
-		
+
 		for( int ix = 0; ix < fddList.count(); ++ix )
 		{
 			if( fddList[ix] != deviceSourcePath )
@@ -376,14 +376,14 @@ void Emulator_Control_Window::Create_Device_Menu()
 				conFddAct->setData( internalDevName + "\n" + fddList[ix] );
 			}
 		}
-		
+
 		if( ! fddList.isEmpty() ) tmpMenu->addSeparator();
-		
+
 		// Add 'Browse' menu item
 		QAction *browseAct = tmpMenu->addAction( QIcon(":/open-file.png"), "Browse...",
 												 this, SLOT(Open_Device_File()) );
 		browseAct->setData( internalDevName );
-		
+
 		// Add 'Eject' menu item
 		QAction *ejectAct = tmpMenu->addAction( QIcon(":/eject.png"), "Eject",
 												this, SLOT(Eject_Device()) );
@@ -400,15 +400,15 @@ void Emulator_Control_Window::Create_Device_Menu()
 			conSdAct->setData( internalDevName + "\n" + deviceSourcePath );
 			conSdAct->setCheckable( true );
 			conSdAct->setChecked( true );
-			
+
 			tmpMenu->addSeparator();
 		}
-		
+
 		// Add 'Browse' menu item
 		QAction *browseAct = tmpMenu->addAction( QIcon(":/open-file.png"), "Browse...",
 												 this, SLOT(Open_Device_File()) );
 		browseAct->setData( internalDevName );
-		
+
 		// Add 'Eject' menu item
 		QAction *ejectAct = tmpMenu->addAction( QIcon(":/eject.png"), "Eject",
 												this, SLOT(Eject_Device()) );
@@ -424,7 +424,7 @@ void Emulator_Control_Window::Create_Device_Menu()
 void Emulator_Control_Window::Connect_Device()
 {
 	QAction *act = qobject_cast<QAction*>( sender() );
-	
+
 	if( act )
 	{
 		QStringList nameAndPath = act->data().toString().split( '\n', QString::SkipEmptyParts );
@@ -434,7 +434,7 @@ void Emulator_Control_Window::Connect_Device()
 					 "Cannot split data to name and path" );
 			return;
 		}
-		
+
 		// Change device source
 		//emit Ready_Read_Command( QString("change %1 \"%2\"").arg(nameAndPath[0]).arg(nameAndPath[1]) );
 		Set_Device( nameAndPath[0], nameAndPath[1] );
@@ -446,13 +446,13 @@ void Emulator_Control_Window::Open_Device_File()
 {
 	QAction *act = qobject_cast<QAction*>( sender() );
 	if( ! act ) return;
-	
+
 	// Get device name
 	QString devName = act->data().toString();
 	QString lastDir = "";
 	QString fileFilter = "";
 	bool cd = false, fd = false;
-	
+
 	// Determine device type
 	if( devName.contains("-cd") )
 	{
@@ -473,16 +473,16 @@ void Emulator_Control_Window::Open_Device_File()
 		cd = false;
 		fd = false;
 	}
-	
+
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Open Device or Image File"), Get_Last_Dir_Path(lastDir), fileFilter );
-	
+
 	if( ! fileName.isEmpty() )
 	{
 		fileName = QDir::toNativeSeparators( fileName );
 
 		//on_actionFD1_Eject_triggered();
 		Set_Device( devName, fileName );
-		
+
 		// Add to Recent Menu
 		if( cd )
 		{
@@ -500,12 +500,12 @@ void Emulator_Control_Window::Open_Device_File()
 void Emulator_Control_Window::Eject_Device()
 {
 	QAction *act = qobject_cast<QAction*>( sender() );
-	
+
 	if( act )
 	{
 		// Eject
 		emit Ready_Read_Command( QString("eject %1").arg(act->data().toString()) );
-		
+
 		// FIXME Save changet device source path
 	}
 }
@@ -527,23 +527,23 @@ void Emulator_Control_Window::closeEvent( QCloseEvent *event )
 			Machine_View->Set_Scaling( ui.actionDisplay_Scaling->isChecked() );
 			Machine_View->Set_Fullscreen( false );
 		}
-		
+
 		Mon_Win->hide();
 		event->accept();
 		return;
 	}
-	
+
 	if( Use_VNC() )
 	{
 		int ret = QMessageBox::question( this, tr("Power Off This VM?"),
 										 tr("Selected VM is running now. Shutdown anyway?"),
 										 QMessageBox::Yes | QMessageBox::Save | QMessageBox::Close | QMessageBox::Cancel,
 										 QMessageBox::Cancel );
-		
+
 		if( ret == QMessageBox::Yes )
 		{
             AQEMU_Service::get().call("stop",Cur_VM);
-			
+
 			Mon_Win->hide();
 			event->accept();
 			return;
@@ -551,7 +551,7 @@ void Emulator_Control_Window::closeEvent( QCloseEvent *event )
 		else if( ret == QMessageBox::Save )
 		{
 			on_actionSave_VM_triggered();
-			
+
 			Mon_Win->hide();
 			event->accept();
 			return;
@@ -561,11 +561,11 @@ void Emulator_Control_Window::closeEvent( QCloseEvent *event )
 			event->ignore();
 			return;
 		}
-		
+
 		// For Section QMessageBox::Close Next Code
 	}
 	#endif
-	
+
 	Mon_Win->hide();
 	event->accept();
 }
@@ -574,36 +574,36 @@ void Emulator_Control_Window::Set_Current_VM( Virtual_Machine *vm )
 {
 	if( vm == NULL ) return;
 	Cur_VM = vm;
-	
+
 	// VM stop
 	connect( Cur_VM, SIGNAL(QEMU_End()),
 			 this, SLOT(QEMU_Quit()) );
-	
+
 	// VM state changet
 	connect( Cur_VM, SIGNAL(State_Changed(Virtual_Machine*,VM::VM_State)),
 			 this, SLOT(VM_State_Changed(Virtual_Machine*,VM::VM_State)) );
-	
+
 	#ifdef VNC_DISPLAY
 	if( Use_VNC() )
 	{
 		this->setWindowTitle( Cur_VM->Get_Machine_Name() );
-		
+
 		connect( Cur_VM, SIGNAL(Loading_Complete()),
 				 this, SLOT(Connect_VNC()) );
 	}
 	#else
 	this->setWindowTitle( Cur_VM->Get_Machine_Name() + tr(" (Emulator Control)") );
 	#endif
-	
+
 	// USB
 	for( int ix = 0; ix < Cur_VM->Get_USB_Ports().count(); ++ix )
 	{
 		QAction *new_act = new QAction( Cur_VM->Get_USB_Ports()[ix].Get_Product_Name(), ui.menuDisconnect );
 		new_act->setData( Cur_VM->Get_USB_Ports()[ix].Get_ID_Line() );
-		
+
 		connect( new_act, SIGNAL(triggered()),
 				 this, SLOT(Delete_USB_From_VM()) );
-		
+
 		ui.menuDisconnect->addAction( new_act );
 	}
 
@@ -614,56 +614,56 @@ void Emulator_Control_Window::Init()
 {
 	First_Start = false;
 	Show_Close_Warning = true;
-	
+
 	// Create Recent Menu Items
 	int max = Settings.value( "CD_ROM_Existing_Images/Max", "5" ).toString().toInt();
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_CD_Items << tmp_act;
-		
+
 		Recent_Files_CD_Items[ ix ]->setText( "" );
 		Recent_Files_CD_Items[ ix ]->setData( "" );
 		Recent_Files_CD_Items[ ix ]->setVisible( false );
-		
+
 		connect( Recent_Files_CD_Items[ix], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_CD_ROM_Image()) );
 	}
-	
+
 	Update_Recent_CD_ROM_Images_List();
-	
+
 	// Floppy
 	max = Settings.value( "Floppy_Existing_Images/Max", "5" ).toString().toInt();
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_FD0_Items << tmp_act;
-		
+
 		Recent_Files_FD0_Items[ ix ]->setText( "" );
 		Recent_Files_FD0_Items[ ix ]->setData( "" );
 		Recent_Files_FD0_Items[ ix ]->setVisible( false );
-		
+
 		connect( Recent_Files_FD0_Items[ix], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_Floppy0_Image()) );
 	}
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_FD1_Items << tmp_act;
-		
+
 		Recent_Files_FD1_Items[ ix ]->setText( "" );
 		Recent_Files_FD1_Items[ ix ]->setData( "" );
 		Recent_Files_FD1_Items[ ix ]->setVisible( false );
-		
+
 		connect( Recent_Files_FD1_Items[ix], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_Floppy1_Image()) );
 	}
-	
+
 	Update_Recent_Floppy_Images_List();
-	
+
 	// Use VNC Embedded Display
 	#ifdef VNC_DISPLAY
 	if( ! Use_VNC() )
@@ -675,21 +675,21 @@ void Emulator_Control_Window::Init()
 	else
 	{
 		setMaximumSize( 4096, 2048 );
-		
+
 		// Add VNC Display Widget
 		if( ! Machine_View )
 			delete Machine_View;
-		
+
 		Machine_View = new MachineView( this , Cur_VM );
-		
+
 		QVBoxLayout *vnc_layout = new QVBoxLayout( centralWidget() );
 		Machine_View->setLayout( vnc_layout );
 		setCentralWidget( Machine_View );
 		Machine_View->show();
-		
+
 		connect( Machine_View, SIGNAL(Full_Size(int,int)),
 				 this, SLOT(Apply_Full_Size(int,int)) );
-		
+
         if ( Cur_VM->Use_VNC() )
 	    	Machine_View->Set_VNC_URL( "localhost", Cur_VM->Get_VNC_Display_Number() +
 				5900 );
@@ -723,7 +723,7 @@ void Emulator_Control_Window::on_actionSave_Screenshot_triggered()
 			// create unique file name
 			QString unic_name = QUuid::createUuid().toString();
 			unic_name = unic_name.mid( 25, 12 );
-			
+
 			// save screenshot
 			Cur_VM->Take_Screenshot( Settings.value("Screenshot_Folder_Path", "").toString() +
 					unic_name + "." + Settings.value( "Screenshot_Save_Format", "PNG" ).toString() );
@@ -742,7 +742,7 @@ void Emulator_Control_Window::on_actionSave_Screenshot_As_triggered()
 	static QString fileName = QDir::homePath(); // For save value
 	fileName = QFileDialog::getSaveFileName( this, tr("Save Screenshot As..."),
 											 fileName, tr("All Files (*)") );
-	
+
 	if( ! fileName.isEmpty() )
 		Cur_VM->Take_Screenshot( QDir::toNativeSeparators(fileName) );
 }
@@ -778,7 +778,7 @@ void Emulator_Control_Window::on_actionPower_Off_triggered()
 	{
 		return;
 	}
-	
+
     AQEMU_Service::get().call("stop",Cur_VM);
 }
 
@@ -803,10 +803,10 @@ void Emulator_Control_Window::on_actionQEMU_Monitor_triggered()
 {
 	connect( Mon_Win, SIGNAL(Command_Sent(QString)), Cur_VM,
 			 SLOT(Execute_Emu_Ctl_Command(QString)) );
-	
+
 	connect( Cur_VM, SIGNAL(Clean_Console(QString)), Mon_Win,
 			 SLOT(Add_QEMU_Out(QString)) );
-	
+
 	Mon_Win->show();
 }
 
@@ -819,7 +819,7 @@ void Emulator_Control_Window::on_actionQuit_triggered()
 void Emulator_Control_Window::on_actionFD0_dev_fd0_triggered()
 {
 	if( ! FD0_Available() ) return;
-	
+
 	on_actionFD0_Eject_triggered();
 	Set_Device( "fda", "/dev/fd0" );
 }
@@ -827,7 +827,7 @@ void Emulator_Control_Window::on_actionFD0_dev_fd0_triggered()
 void Emulator_Control_Window::on_actionFD0_dev_null_triggered()
 {
 	if( ! FD0_Available() ) return;
-	
+
 	on_actionFD0_Eject_triggered();
 	Set_Device( "fda", "/dev/null" );
 }
@@ -835,18 +835,18 @@ void Emulator_Control_Window::on_actionFD0_dev_null_triggered()
 void Emulator_Control_Window::on_actionFD0_Other_triggered()
 {
 	if( ! FD0_Available() ) return;
-	
+
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Open Device or Image File"),
 													 Get_Last_Dir_Path(Cur_VM->Get_FD0().Get_File_Name()),
 													 tr("All Files (*);;Images Files (*.img *.ima)") );
-	
+
 	if( ! fileName.isEmpty() )
 	{
 		fileName = QDir::toNativeSeparators( fileName );
 
 		on_actionFD0_Eject_triggered();
 		Set_Device( "fda", fileName );
-		
+
 		// Add to Recent Menu
 		Add_To_Recent_FDD_Files( fileName );
 		Update_Recent_Floppy_Images_List();
@@ -856,14 +856,14 @@ void Emulator_Control_Window::on_actionFD0_Other_triggered()
 void Emulator_Control_Window::on_actionFD0_Eject_triggered()
 {
 	if( ! FD0_Available() ) return;
-	
+
 	emit Ready_Read_Command( "eject -f floppy0" );
 }
 
 void Emulator_Control_Window::Open_Recent_Floppy0_Image()
 {
 	QAction *tmp_act = qobject_cast<QAction*>( sender() );
-	
+
 	if( tmp_act )
 	{
 		on_actionFD0_Eject_triggered();
@@ -874,7 +874,7 @@ void Emulator_Control_Window::Open_Recent_Floppy0_Image()
 void Emulator_Control_Window::on_actionFD1_dev_fd0_triggered()
 {
 	if( ! FD1_Available() ) return;
-	
+
 	on_actionFD1_Eject_triggered();
 	Set_Device( "fdb", "/dev/fd0" );
 }
@@ -882,7 +882,7 @@ void Emulator_Control_Window::on_actionFD1_dev_fd0_triggered()
 void Emulator_Control_Window::on_actionFD1_dev_null_triggered()
 {
 	if( ! FD1_Available() ) return;
-	
+
 	on_actionFD1_Eject_triggered();
 	Set_Device( "fdb", "/dev/null" );
 }
@@ -890,18 +890,18 @@ void Emulator_Control_Window::on_actionFD1_dev_null_triggered()
 void Emulator_Control_Window::on_actionFD1_Other_triggered()
 {
 	if( ! FD1_Available() ) return;
-	
+
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Open Device or Image File"),
 													 Get_Last_Dir_Path(Cur_VM->Get_FD1().Get_File_Name()),
 													 tr("All Files (*);;Images Files (*.img *.ima)") );
-	
+
 	if( ! fileName.isEmpty() )
 	{
 		fileName = QDir::toNativeSeparators( fileName );
 
 		on_actionFD1_Eject_triggered();
 		Set_Device( "fdb", fileName );
-		
+
 		// Add to Recent Menu
 		Add_To_Recent_FDD_Files( fileName );
 		Update_Recent_Floppy_Images_List();
@@ -918,7 +918,7 @@ void Emulator_Control_Window::on_actionFD1_Eject_triggered()
 void Emulator_Control_Window::Open_Recent_Floppy1_Image()
 {
 	QAction *tmp_act = qobject_cast<QAction*>( sender() );
-	
+
 	if( tmp_act )
 	{
 		on_actionFD1_Eject_triggered();
@@ -929,7 +929,7 @@ void Emulator_Control_Window::Open_Recent_Floppy1_Image()
 void Emulator_Control_Window::on_actionCDROM_dev_cdrom_triggered()
 {
 	if( ! CD_ROM_Available() ) return;
-	
+
 	on_actionCDROM_Eject_triggered();
 	Set_Device( "cdrom", "/dev/cdrom" );
 }
@@ -937,7 +937,7 @@ void Emulator_Control_Window::on_actionCDROM_dev_cdrom_triggered()
 void Emulator_Control_Window::on_actionCDROM_dev_null_triggered()
 {
 	if( ! CD_ROM_Available() ) return;
-	
+
 	on_actionCDROM_Eject_triggered();
 	Set_Device( "cdrom", "/dev/null" );
 }
@@ -945,18 +945,18 @@ void Emulator_Control_Window::on_actionCDROM_dev_null_triggered()
 void Emulator_Control_Window::on_actionCDROM_Other_triggered()
 {
 	if( ! CD_ROM_Available() ) return;
-	
+
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Open Device or Image File"),
 													 Get_Last_Dir_Path(Cur_VM->Get_CD_ROM().Get_File_Name()),
 													 tr("All Files (*);;Images Files (*.iso)") );
-	
+
 	if( ! fileName.isEmpty() )
 	{
 		fileName = QDir::toNativeSeparators( fileName );
 
 		on_actionCDROM_Eject_triggered();
 		Set_Device( "cdrom", fileName );
-		
+
 		// Add to Recent Menu
 		Add_To_Recent_CD_Files( fileName );
 		Update_Recent_CD_ROM_Images_List();
@@ -966,18 +966,18 @@ void Emulator_Control_Window::on_actionCDROM_Other_triggered()
 void Emulator_Control_Window::on_actionCDROM_Eject_triggered()
 {
 	if( ! CD_ROM_Available() ) return;
-	
+
 	emit Ready_Read_Command( "eject -f ide1-cd0" );
 }
 
 void Emulator_Control_Window::Open_Recent_CD_ROM_Image()
 {
 	QAction *tmp_act = qobject_cast<QAction*>( sender() );
-	
+
 	if( tmp_act )
 	{
 		if( ! CD_ROM_Available() ) return;
-	
+
 		on_actionCDROM_Eject_triggered();
 		Set_Device( "cdrom", tmp_act->data().toString() );
 	}
@@ -986,29 +986,29 @@ void Emulator_Control_Window::Open_Recent_CD_ROM_Image()
 void Emulator_Control_Window::Delete_USB_From_VM()
 {
 	QAction *usb_item = qobject_cast<QAction*>( sender() );
-	
+
 	if( usb_item )
 	{
 		QList<QAction*> ac_list = ui.menuDisconnect->actions();
-		
+
 		for( int ix = 0; ix < ac_list.count(); ++ix )
 		{
 			if( usb_item->data().toString() == ac_list[ix]->data().toString() )
 			{
 				// Delete from Running VM
 				QString bus_addr; // FIXME = Cur_VM->Get_USB_Bus_Address( usb_item->data().toString() );
-				
+
 				if( bus_addr.isEmpty() ) return;
-				
+
 				emit Ready_Read_Command( "usb_del " + bus_addr );
-				
+
 				// Delete item
 				ui.menuDisconnect->removeAction( usb_item );
-				
+
 				return;
 			}
 		}
-		
+
 		// Cannot Find
 		AQGraphic_Error( "void Emulator_Control_Window::Delete_USB_From_VM()",
 						 tr("Error!"), tr("Cannot Find USB Device!"), false );
@@ -1023,11 +1023,11 @@ void Emulator_Control_Window::Delete_USB_From_VM()
 void Emulator_Control_Window::Add_USB_To_VM()
 {
 	QAction *usb_item = qobject_cast<QAction*>( sender() );
-	
+
 	if( usb_item )
 	{
 		QList<QAction*> ac_list = ui.menuDisconnect->actions();
-		
+
 		for( int ix = 0; ix < ac_list.count(); ++ix )
 		{
 			// Unique value
@@ -1038,15 +1038,15 @@ void Emulator_Control_Window::Add_USB_To_VM()
 				return;
 			}
 		}
-		
+
 		// Create Item for Disconnect Menu
 		QAction *dis_act = new QAction( usb_item->text(), ui.menuDisconnect );
 		dis_act->setData( usb_item->data() );
-		
+
 		connect( dis_act, SIGNAL(triggered()), this, SLOT(Delete_USB_From_VM()) );
-		
+
 		ui.menuDisconnect->addAction( dis_act );
-		
+
 		// Add To Running VM
 		emit Ready_Read_Command( "usb_add host:" + usb_item->data().toString() );
 	}
@@ -1061,16 +1061,16 @@ void Emulator_Control_Window::on_actionUSB_Update_Device_List_triggered()
 {
 	// Get New USB Host List
 	QList<VM_USB> tmp_list = System_Info::Get_All_Host_USB();
-	
+
 	if( tmp_list.isEmpty() )
 	{
 		AQGraphic_Warning( tr("Error!"),
 						   tr("Cannot Get USB Information From System!") );
 		return;
 	}
-	
+
 	QList<VM_USB> used_list = System_Info::Get_Used_USB_List();
-	
+
 	// Delete all used USB devices
 	for( int ax = 0; ax < tmp_list.count(); ax++ )
 	{
@@ -1084,26 +1084,26 @@ void Emulator_Control_Window::on_actionUSB_Update_Device_List_triggered()
 			}
 		}
 	}
-	
+
 	QList<QAction*> ac_list = ui.menuUSB_Connect->actions();
-	
+
 	// Delete Previous Menu (is avirable)
 	if( ac_list.count() > 1 )
 	{
 		ui.menuUSB_Connect->clear();
-		
+
 		ui.menuUSB_Connect->addAction( ui.actionUSB_Update_Device_List );
 		ui.menuUSB_Connect->addSeparator();
 	}
-	
+
 	// Add items
 	for( int ix = 0; ix < tmp_list.count(); ++ix )
 	{
 		QAction *new_act = new QAction( tmp_list[ix].Get_Product_Name(), ui.menuUSB_Connect );
 		new_act->setData( tmp_list[ix].Get_ID_Line() );
-		
+
 		connect( new_act, SIGNAL(triggered()), this, SLOT(Add_USB_To_VM()) );
-		
+
 		ui.menuUSB_Connect->addAction( new_act );
 	}
 }
@@ -1111,11 +1111,11 @@ void Emulator_Control_Window::on_actionUSB_Update_Device_List_triggered()
 void Emulator_Control_Window::on_actionBy_Bus_Address_triggered()
 {
 	bool ok = false;
-	
+
 	QString bus_addr = QInputDialog::getText( this, tr("Disconnect USB"),
 										  tr("Enter You Bus.Address VM USB Value"),
 										  QLineEdit::Normal, "", &ok );
-	
+
 	if( ok && ! bus_addr.isEmpty() )
 	{
 		emit Ready_Read_Command( "usb_del " + bus_addr );
@@ -1125,20 +1125,20 @@ void Emulator_Control_Window::on_actionBy_Bus_Address_triggered()
 void Emulator_Control_Window::on_actionUSB_Disconnect_All_Devices_triggered()
 {
 	QList<QAction*> ac_list = ui.menuDisconnect->actions();
-	
+
 	for( int dx = 0; dx < ac_list.count(); ++dx )
 	{
 		if( ac_list[dx]->data().isNull() == false &&
 			ac_list[dx]->data().isValid() == true )
 		{
 			QString bus_addr; // FIXME = Cur_VM->Get_USB_Bus_Address( ac_list[dx]->data().toString() );
-			
+
 			if( bus_addr.isEmpty() ) return;
-			
+
 			emit Ready_Read_Command( "usb_del " + bus_addr );
 		}
 	}
-	
+
 	ui.menuDisconnect->clear();
 	ui.menuDisconnect->addAction( ui.actionUSB_Disconnect_All_Devices );
 	ui.menuDisconnect->addAction( ui.actionBy_Bus_Address );
@@ -1153,11 +1153,11 @@ void Emulator_Control_Window::on_actionCtrl_Alt_Delete_triggered()
 void Emulator_Control_Window::on_actionOther_Keys_triggered()
 {
 	bool ok = false;
-	
+
 	QString keys = QInputDialog::getText( this, tr("Send Keys"),
 			tr("Enter your key combinations such as ctrl-alt-del or alt-f2"),
 			QLineEdit::Normal, "", &ok );
-	
+
 	if( ok && ! keys.isEmpty() )
 		emit Ready_Read_Command( "sendkey " + keys );
 }
@@ -1186,7 +1186,7 @@ QString convert_char(QString s)
 {
     if ( s.length() != 1 )
         return s;
-    
+
     if ( s == "/" )
         return "slash";
     if ( s == ":" )
@@ -1365,12 +1365,12 @@ void Emulator_Control_Window::on_actionFullscreen_Mode_triggered()
 		    int ret = QMessageBox::question( this, tr("Fullscreen mode"),
 										     tr("To return from fullscreen to windowed mode press Ctrl-Alt-F\nShow this message again?"),
 										     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
-		
+
 		    if( ret == QMessageBox::No )
 			    Settings.setValue( "Show_Fullscreen_Warning", "no" );
 	    }
     }
-	
+
 	setMaximumSize( 4096, 2048 );
 	Machine_View->Set_Scaling( ui.actionFullscreen_Mode->isChecked() );
 	Machine_View->Set_Fullscreen( ui.actionFullscreen_Mode->isChecked() );
@@ -1463,33 +1463,33 @@ void Emulator_Control_Window::Update_Recent_CD_ROM_Images_List()
 		Recent_Files_CD_Items[ dx ]->setData( "" );
 		Recent_Files_CD_Items[ dx ]->setVisible( false );
 	}
-	
+
 	// Add New
 	int max = Settings.value( "CD_ROM_Existing_Images/Max", "5" ).toString().toInt();
-	
+
 	while( max > Recent_Files_CD_Items.count() )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_CD_Items << tmp_act;
-		
+
 		Recent_Files_CD_Items[ Recent_Files_CD_Items.count() -1 ]->setText( "" );
 		Recent_Files_CD_Items[ Recent_Files_CD_Items.count() -1 ]->setData( "" );
 		Recent_Files_CD_Items[ Recent_Files_CD_Items.count() -1 ]->setVisible( false );
-		
+
 		connect( Recent_Files_CD_Items[Recent_Files_CD_Items.count() -1], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_CD_ROM_Image()) );
 	}
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		if( ix < Get_CD_Recent_Images_List().count() && Get_CD_Recent_Images_List()[ix].isEmpty() == false )
 		{
 			QFileInfo info = QFileInfo( Get_CD_Recent_Images_List()[ix] );
-			
+
 			Recent_Files_CD_Items[ ix ]->setText( info.fileName() );
 			Recent_Files_CD_Items[ ix ]->setData( Get_CD_Recent_Images_List()[ix] );
 			Recent_Files_CD_Items[ ix ]->setVisible( true );
-			
+
 			ui.menuCDROM_Recent_Files->addAction( Recent_Files_CD_Items[ix] );
 		}
 	}
@@ -1503,67 +1503,67 @@ void Emulator_Control_Window::Update_Recent_Floppy_Images_List()
 		Recent_Files_FD0_Items[ dx ]->setText( "" );
 		Recent_Files_FD0_Items[ dx ]->setData( "" );
 		Recent_Files_FD0_Items[ dx ]->setVisible( false );
-		
+
 		Recent_Files_FD1_Items[ dx ]->setText( "" );
 		Recent_Files_FD1_Items[ dx ]->setData( "" );
 		Recent_Files_FD1_Items[ dx ]->setVisible( false );
 	}
-	
+
 	// Add New
 	int max = Settings.value( "CD_ROM_Existing_Images/Max", "5" ).toString().toInt();
-	
+
 	while( max > Recent_Files_FD0_Items.count() )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_FD0_Items << tmp_act;
-		
+
 		Recent_Files_FD0_Items[ Recent_Files_FD0_Items.count() -1 ]->setText( "" );
 		Recent_Files_FD0_Items[ Recent_Files_FD0_Items.count() -1 ]->setData( "" );
 		Recent_Files_FD0_Items[ Recent_Files_FD0_Items.count() -1 ]->setVisible( false );
-		
+
 		connect( Recent_Files_FD0_Items[Recent_Files_FD0_Items.count() -1], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_Floppy0_Image()) );
 	}
-	
+
 	while( max > Recent_Files_FD1_Items.count() )
 	{
 		QAction *tmp_act = new QAction( this );
 		Recent_Files_FD1_Items << tmp_act;
-		
+
 		Recent_Files_FD1_Items[ Recent_Files_FD1_Items.count() -1 ]->setText( "" );
 		Recent_Files_FD1_Items[ Recent_Files_FD1_Items.count() -1 ]->setData( "" );
 		Recent_Files_FD1_Items[ Recent_Files_FD1_Items.count() -1 ]->setVisible( false );
-		
+
 		connect( Recent_Files_FD1_Items[Recent_Files_FD1_Items.count() -1], SIGNAL(triggered()),
 				 this, SLOT(Open_Recent_Floppy1_Image()) );
 	}
-	
+
 	QStringList fd_list = Get_FDD_Recent_Images_List();
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		if( ix < fd_list.count() && fd_list[ix].isEmpty() == false )
 		{
 			QFileInfo info = QFileInfo( fd_list[ix] );
-			
+
 			Recent_Files_FD0_Items[ ix ]->setText( info.fileName() );
 			Recent_Files_FD0_Items[ ix ]->setData( fd_list[ix] );
 			Recent_Files_FD0_Items[ ix ]->setVisible( true );
-			
+
 			ui.menuFD0_Recent_Files->addAction( Recent_Files_FD0_Items[ix] );
 		}
 	}
-	
+
 	for( int ix = 0; ix < max; ++ix )
 	{
 		if( ix < fd_list.count() && fd_list[ix].isEmpty() == false )
 		{
 			QFileInfo info = QFileInfo( fd_list[ix] );
-			
+
 			Recent_Files_FD1_Items[ ix ]->setText( info.fileName() );
 			Recent_Files_FD1_Items[ ix ]->setData( fd_list[ix] );
 			Recent_Files_FD1_Items[ ix ]->setVisible( true );
-			
+
 			ui.menuFD1_Recent_Files->addAction( Recent_Files_FD1_Items[ix] );
 		}
 	}
@@ -1573,14 +1573,14 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 {
 	/*if( Cur_VM->Get_Emulator().Get_Version() != VM::QEMU_0_9_0 )*/
 	QString new_dev_name;
-	
+
 	if( dev_name == "fda" ) new_dev_name = "floppy0";
 	else if( dev_name == "fdb" ) new_dev_name = "floppy1";
 	else if( dev_name == "cdrom" ) new_dev_name = "ide1-cd0";
 	else new_dev_name = dev_name;
-	
+
 	emit Ready_Read_Command( "change " + new_dev_name + " \"" + path + "\"" );
-	
+
 	// Save new path
 	if( dev_name == "fda" ) Cur_VM->Set_FD0( VM_Storage_Device(true, path) );
 	else if( dev_name == "fdb" ) Cur_VM->Set_FD1( VM_Storage_Device(true, path) );
@@ -1601,10 +1601,10 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 			{
 				// Find CD-ROM in other storage devices
 				QList<VM_Native_Storage_Device> devList = Cur_VM->Get_Storage_Devices_List();
-				
+
 				int cdromCount = 0;
 				int deviceIndex = -1;
-				
+
 				for( int ix = 0; ix < devList.count(); ++ix )
 				{
 					if( devList[ix].Get_Media() == VM::DM_CD_ROM )
@@ -1613,7 +1613,7 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 						deviceIndex = ix;
 					}
 				}
-				
+
 				// Simple way finded device?
 				if( cdromCount == 1 && deviceIndex != -1 )
 				{
@@ -1646,10 +1646,10 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 			{
 				// Find floppy in storage devices
 				QList<VM_Native_Storage_Device> devList = Cur_VM->Get_Storage_Devices_List();
-				
+
 				int floppyCount = 0;
 				int deviceIndex = -1;
-				
+
 				for( int ix = 0; ix < devList.count(); ++ix )
 				{
 					if( devList[ix].Get_Interface() == VM::DI_Floppy )
@@ -1658,7 +1658,7 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 						deviceIndex = ix;
 					}
 				}
-				
+
 				// Simple way finded device?
 				if( floppyCount == 1 && deviceIndex != -1 )
 				{
@@ -1673,7 +1673,7 @@ void Emulator_Control_Window::Set_Device( const QString &dev_name, const QString
 		}
 		else
 		{
-			
+
 		}
 	}
 }

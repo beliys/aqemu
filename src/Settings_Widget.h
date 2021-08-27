@@ -38,7 +38,7 @@ class QSplitter;
 class My_List_Widget : public QListWidget
 {
     Q_OBJECT
-    
+
     public:
         My_List_Widget(QWidget* parent);
 
@@ -68,5 +68,3 @@ class Settings_Widget : public QWidget
 };
 
 #endif
-
-

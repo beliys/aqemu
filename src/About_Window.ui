@@ -55,7 +55,7 @@ QTabWidget::pane
 
 QTabWidget::tab-bar
 {
-    alignment: center; 
+    alignment: center;
 }
 
 /*QTabBar::tab

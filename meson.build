@@ -185,4 +185,3 @@ install_data('resources/menu_data/aqemu.desktop', install_dir : 'share/applicati
 install_data('resources/menu_data/aqemu.appdata.xml', install_dir : 'share/appdata')
 
 # TODO: qt5 translations
-

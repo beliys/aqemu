@@ -11,7 +11,7 @@
 **
 ** The above copyright notice and this permission notice shall be
 ** included in all copies or substantial portions of the Software.
-** 
+**
 ** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 ** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -250,7 +250,7 @@ QDomDocument::QDomDocument(const QString&)
 QDomDocument::~QDomDocument()
 {
     delete document;
-    document = nullptr; 
+    document = nullptr;
 }
 
 void QDomDocument::appendChild(const QDomText& t)
@@ -258,7 +258,7 @@ void QDomDocument::appendChild(const QDomText& t)
     if ( document )
         document->InsertEndChild(t.text);
 }
-    
+
 
 void QDomDocument::appendChild(const QDomElement& e)
 {
@@ -272,7 +272,7 @@ void QDomDocument::appendChild(const QDomProcessingInstruction& p)
 }
 
 QDomElement QDomDocument::documentElement()
-{   
+{
     if ( document )
         return QDomElement(document->RootElement());
     else
@@ -324,7 +324,7 @@ bool QDomDocument::setContent(QFile* file, bool b, QString* s, int* i, int* i2)
             const char* err_str =  document->ErrorStr();
             if ( err_str != NULL )
                 s->fromLatin1(err_str);
-            
+
             if ( i )
             {
                 auto lineNum = document->GetLineNum();
@@ -349,4 +349,3 @@ bool QDomDocument::setContent(QFile* file, bool b, QString* s, int* i, int* i2)
         return false;
     }
 }
-

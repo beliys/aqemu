@@ -30,10 +30,10 @@
 class About_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		About_Window( QWidget *parent = 0 );
-		
+
 	private slots:
 		void Show_Links_File();
 

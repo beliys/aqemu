@@ -34,7 +34,7 @@ namespace docopt {
 
 		value(std::string);
 		value(std::vector<std::string>);
-		
+
 		explicit value(bool);
 		explicit value(long);
 		explicit value(int v) : value(static_cast<long>(v)) {}
@@ -46,10 +46,10 @@ namespace docopt {
 		value& operator=(value&&) noexcept;
 
 		Kind kind() const { return kind_; }
-		
+
 		// Test if this object has any contents at all
 		explicit operator bool() const { return kind_ != Kind::Empty; }
-		
+
 		// Test the type contained by this value object
 		bool isBool()       const { return kind_==Kind::Bool; }
 		bool isString()     const { return kind_==Kind::String; }
@@ -63,7 +63,7 @@ namespace docopt {
 		std::vector<std::string> const& asStringList() const;
 
 		size_t hash() const noexcept;
-		
+
 		friend bool operator==(value const&, value const&);
 		friend bool operator!=(value const&, value const&);
 
@@ -71,13 +71,13 @@ namespace docopt {
 		union Variant {
 			Variant() {}
 			~Variant() {  /* do nothing; will be destroyed by ~value */ }
-			
+
 			bool boolValue;
 			long longValue;
 			std::string strValue;
 			std::vector<std::string> strList;
 		};
-		
+
 		static const char* kindAsString(Kind kind) {
 			switch (kind) {
 				case Kind::Empty: return "empty";
@@ -229,7 +229,7 @@ namespace docopt {
 
 	inline
 	value& value::operator=(value&& other) noexcept {
-		// move of all the types involved is noexcept, so we dont have to worry about 
+		// move of all the types involved is noexcept, so we dont have to worry about
 		// these two statements throwing, which gives us a consistency guarantee.
 		this->~value();
 		new (this) value(std::move(other));
@@ -311,7 +311,7 @@ namespace docopt {
 	{
 		if (v1.kind_ != v2.kind_)
 			return false;
-		
+
 		switch (v1.kind_) {
 			case Kind::String:
 				return v1.variant_.strValue==v2.variant_.strValue;

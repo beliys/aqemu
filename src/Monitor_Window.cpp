@@ -30,7 +30,7 @@ Monitor_Window::Monitor_Window( QWidget *parent )
 	: QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
 	ui.Edit_Monitor_Out->setFont( Get_Font() );
 }
 
@@ -51,11 +51,11 @@ void Monitor_Window::on_Button_Font_clicked()
 {
 	bool ok = false;
 	QFont font = QFontDialog::getFont( &ok, Get_Font(), this );
-	
+
 	if( ok )
 	{
 		ui.Edit_Monitor_Out->setFont( font );
-		
+
 		QSettings settings;
 		settings.setValue( "Emulator_Monitor_Font", font.toString() );
 	}
@@ -65,11 +65,11 @@ QFont Monitor_Window::Get_Font()
 {
 	QSettings settings;
 	QFont font = QFont( "DejaVu Sans Mono", 10 );
-	
+
 	QString fontDescription = settings.value( "Emulator_Monitor_Font", "" ).toString();
 	if( ! fontDescription.isEmpty() )
 		font.fromString( fontDescription );
-	
+
 	return font;
 }
 

@@ -38,13 +38,13 @@ Ports_Tab_Widget::Ports_Tab_Widget( QWidget *parent )
 	: QWidget( parent )
 {
 	ui.setupUi( this );
-	
+
 	Index = 0;
-	
+
 	QHeaderView *hv = new QHeaderView( Qt::Vertical, ui.Ports_Table );
 	hv->setSectionResizeMode( QHeaderView::Fixed );
 	ui.Ports_Table->setVerticalHeader( hv );
-	
+
 	hv = new QHeaderView( Qt::Horizontal, ui.Ports_Table );
 	hv->setStretchLastSection( true );
 	hv->setSectionResizeMode( QHeaderView::ResizeToContents );
@@ -70,13 +70,13 @@ void Ports_Tab_Widget::syncLayout(Device_Manager_Widget* dm)
 QList<VM_Port> Ports_Tab_Widget::Get_Serial_Ports() const
 {
 	QList<VM_Port> tmp_list;
-	
+
 	for( QMapIterator<int, VM_Port> iter(Serial_Ports); iter.hasNext(); )
 	{
 		iter.next();
 		tmp_list << iter.value();
 	}
-	
+
 	return tmp_list;
 }
 
@@ -86,13 +86,13 @@ void Ports_Tab_Widget::Set_Serial_Ports( const QList<VM_Port> &list )
 	{
 		Index++;
 		Serial_Ports[ Index ] = list[ ix ];
-		
+
 		ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-		
+
 		QTableWidgetItem *newItem = new QTableWidgetItem( Get_Port_Info(Serial_Ports[Index]) );
 		newItem->setData( Qt::UserRole, Index );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-		
+
 		newItem = new QTableWidgetItem( tr("COM (Serial Port)") );
 		newItem->setData( Qt::UserRole, "COM" );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
@@ -102,13 +102,13 @@ void Ports_Tab_Widget::Set_Serial_Ports( const QList<VM_Port> &list )
 QList<VM_Port> Ports_Tab_Widget::Get_Parallel_Ports() const
 {
 	QList<VM_Port> tmp_list;
-	
+
 	for( QMapIterator<int, VM_Port> iter(Parallel_Ports); iter.hasNext(); )
 	{
 		iter.next();
 		tmp_list << iter.value();
 	}
-	
+
 	return tmp_list;
 }
 
@@ -118,13 +118,13 @@ void Ports_Tab_Widget::Set_Parallel_Ports( const QList<VM_Port> &list )
 	{
 		Index++;
 		Parallel_Ports[ Index ] = list[ ix ];
-		
+
 		ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-		
+
 		QTableWidgetItem *newItem = new QTableWidgetItem( Get_Port_Info(Parallel_Ports[Index]) );
 		newItem->setData( Qt::UserRole, Index );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-		
+
 		newItem = new QTableWidgetItem( tr("LPT (Parallel Port)") );
 		newItem->setData( Qt::UserRole, "LPT" );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
@@ -134,13 +134,13 @@ void Ports_Tab_Widget::Set_Parallel_Ports( const QList<VM_Port> &list )
 QList<VM_USB> Ports_Tab_Widget::Get_USB_Ports() const
 {
 	QList<VM_USB> tmp_list;
-	
+
 	for( QMapIterator<int, VM_USB> iter(USB_Ports); iter.hasNext(); )
 	{
 		iter.next();
 		tmp_list << iter.value();
 	}
-	
+
 	return tmp_list;
 }
 
@@ -150,13 +150,13 @@ void Ports_Tab_Widget::Set_USB_Ports( const QList<VM_USB> &list )
 	{
 		Index++;
 		USB_Ports[ Index ] = list[ ix ];
-		
+
 		ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-		
+
 		QTableWidgetItem *newItem = new QTableWidgetItem( Get_USB_Port_Info(USB_Ports[Index]) );
 		newItem->setData( Qt::UserRole, Index );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-		
+
 		newItem = new QTableWidgetItem( tr("USB Port") );
 		newItem->setData( Qt::UserRole, "USB" );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
@@ -167,9 +167,9 @@ void Ports_Tab_Widget::Clear_Old_Ports()
 {
 	ui.Ports_Table->clearContents();
 	for( int rx = 0; rx < ui.Ports_Table->rowCount(); ) ui.Ports_Table->removeRow( rx );
-	
+
 	Index = 0;
-	
+
 	Serial_Ports.clear();
 	Parallel_Ports.clear();
 	USB_Ports.clear();
@@ -185,11 +185,11 @@ QString Ports_Tab_Widget::Get_USB_Port_Info( const VM_USB &port )
 	if( port.Get_Use_Host_Device() == false )
 	{
 		QString devName = "";
-		
+
 		bool usb_k, usb_m, usb_t, usb_wt, usb_b;
 		usb_k = usb_m = usb_t = usb_wt = usb_b = false;
 		port.Get_USB_QEMU_Devices( usb_k, usb_m, usb_t, usb_wt, usb_b );
-		
+
 		if( usb_k ) devName = tr("Keyboard");
 		else if( usb_m ) devName = tr("Mouse");
 		else if( usb_t ) devName = tr("Tablet");
@@ -200,7 +200,7 @@ QString Ports_Tab_Widget::Get_USB_Port_Info( const VM_USB &port )
 			AQError( "QString Ports_Tab_Widget::Get_USB_Port_Info( const VM_USB &port )",
 					 "No QEMU USB Device!" );
 		}
-		
+
 		return tr( "Virtual QEMU Device: %1" ).arg(devName);
 	}
 	else
@@ -233,25 +233,25 @@ void Ports_Tab_Widget::on_TB_Add_Serial_Port_clicked()
 	{
 		Add_Port_Window *add_port_win = new Add_Port_Window( this );
 		add_port_win->Set_Port( VM_Port() );
-		
+
 		if( add_port_win->exec() == QDialog::Accepted )
 		{
 			Index++;
 			Serial_Ports[ Index ] = add_port_win->Get_Port();
-			
+
 			ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-			
+
 			QTableWidgetItem *newItem = new QTableWidgetItem( Get_Port_Info(add_port_win->Get_Port()) );
 			newItem->setData( Qt::UserRole, Index );
 			ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-			
+
 			newItem = new QTableWidgetItem( tr("COM (Serial Port)") );
 			newItem->setData( Qt::UserRole, "COM" );
 			ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
-			
+
 			emit Settings_Changed();
 		}
-		
+
 		delete add_port_win;
 	}
 }
@@ -266,25 +266,25 @@ void Ports_Tab_Widget::on_TB_Add_Parallel_Port_clicked()
 	{
 		Add_Port_Window *add_port_win = new Add_Port_Window( this );
 		add_port_win->Set_Port( VM_Port() );
-		
+
 		if( add_port_win->exec() == QDialog::Accepted )
 		{
 			Index++;
 			Parallel_Ports[ Index ] = add_port_win->Get_Port();
-			
+
 			ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-			
+
 			QTableWidgetItem *newItem = new QTableWidgetItem( Get_Port_Info(add_port_win->Get_Port()) );
 			newItem->setData( Qt::UserRole, Index );
 			ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-			
+
 			newItem = new QTableWidgetItem( tr("LPT (Parallel Port)") );
 			newItem->setData( Qt::UserRole, "LPT" );
 			ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
-			
+
 			emit Settings_Changed();
 		}
-		
+
 		delete add_port_win;
 	}
 }
@@ -293,25 +293,25 @@ void Ports_Tab_Widget::on_TB_Add_USB_Port_clicked()
 {
 	Add_USB_Port_Window *add_usb_win = new Add_USB_Port_Window( this );
 	add_usb_win->Set_Port( VM_USB() );
-	
+
 	if( add_usb_win->exec() == QDialog::Accepted )
 	{
 		Index++;
 		USB_Ports[ Index ] = add_usb_win->Get_Port();
-		
+
 		ui.Ports_Table->insertRow( ui.Ports_Table->rowCount() );
-		
+
 		QTableWidgetItem *newItem = new QTableWidgetItem( Get_USB_Port_Info(add_usb_win->Get_Port()) );
 		newItem->setData( Qt::UserRole, Index );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 1, newItem );
-		
+
 		newItem = new QTableWidgetItem( tr("USB Port") );
 		newItem->setData( Qt::UserRole, "USB" );
 		ui.Ports_Table->setItem( ui.Ports_Table->rowCount()-1, 0, newItem );
-		
+
 		emit Settings_Changed();
 	}
-	
+
 	delete add_usb_win;
 }
 
@@ -327,44 +327,44 @@ void Ports_Tab_Widget::on_TB_Edit_Port_clicked()
 		// Port Type
 		QString type = ui.Ports_Table->item( ui.Ports_Table->currentRow(), 0 )->data( Qt::UserRole ).toString();
 		int ix = ui.Ports_Table->item( ui.Ports_Table->currentRow(), 1 )->data( Qt::UserRole ).toInt();
-		
+
 		if( type == "COM" )
 		{
 			Add_Port_Window *add_port_win = new Add_Port_Window( this );
 			add_port_win->Set_Port( Serial_Ports[ix] );
-			
+
 			if( add_port_win->exec() == QDialog::Accepted )
 			{
 				Serial_Ports[ ix ] = add_port_win->Get_Port();
 				emit Settings_Changed();
 			}
-			
+
 			delete add_port_win;
 		}
 		else if( type == "LPT" )
 		{
 			Add_Port_Window *add_port_win = new Add_Port_Window( this );
 			add_port_win->Set_Port( Parallel_Ports[ix] );
-			
+
 			if( add_port_win->exec() == QDialog::Accepted )
 			{
 				Parallel_Ports[ ix ] = add_port_win->Get_Port();
 				emit Settings_Changed();
 			}
-			
+
 			delete add_port_win;
 		}
 		else if( type == "USB" )
 		{
 			Add_USB_Port_Window *add_usb_win = new Add_USB_Port_Window( this );
 			add_usb_win->Set_Port( USB_Ports[ix] );
-			
+
 			if( add_usb_win->exec() == QDialog::Accepted )
 			{
 				USB_Ports[ ix ] = add_usb_win->Get_Port();
 				emit Settings_Changed();
 			}
-			
+
 			delete add_usb_win;
 		}
 		else
@@ -387,7 +387,7 @@ void Ports_Tab_Widget::on_TB_Delete_Port_clicked()
 	{
 		QString type = ui.Ports_Table->item( ui.Ports_Table->currentRow(), 0 )->data( Qt::UserRole ).toString();
 		int ix = ui.Ports_Table->item( ui.Ports_Table->currentRow(), 1 )->data( Qt::UserRole ).toInt();
-		
+
 		if( type == "COM" ) Serial_Ports.remove( ix );
 		else if( type == "LPT" ) Parallel_Ports.remove( ix );
 		else if( type == "USB" ) USB_Ports.remove( ix );
@@ -397,9 +397,9 @@ void Ports_Tab_Widget::on_TB_Delete_Port_clicked()
 					 "Invalid port type!" );
 			return;
 		}
-		
+
 		ui.Ports_Table->removeRow( ui.Ports_Table->currentRow() );
-		
+
 		emit Settings_Changed();
 	}
 }

@@ -37,7 +37,7 @@ Delete_VM_Files_Window::Delete_VM_Files_Window( Virtual_Machine *vm, QWidget *pa
 	: QDialog( parent )
 {
     init();
-	
+
 	Set_VM( vm );
 }
 
@@ -105,176 +105,176 @@ void Delete_VM_Files_Window::Set_VM( Virtual_Machine *vm )
 
     ui.VM_Info_Text->setHtml(vm->GenerateHTMLInfoText(3));
     ui.machine_Name_LineEdit->setText(vm->Get_Machine_Name());
-	
+
 	// Clear List
 	Clear_List();
-	
+
 	VM_Name = vm->Get_Machine_Name();
-	
+
 	File_List_Item tmp;
-	
+
 	// VM File
 	VM_Path = vm->Get_VM_XML_File_Path();
-	
+
 	// Screenshot
 	if( Path_Valid(vm->Get_Screenshot_Path()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "Screenshot" );
 		tmp.Path = vm->Get_Screenshot_Path();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// FD0
 	if( Path_Valid(vm->Get_FD0().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "Floppy A" );
 		tmp.Path = vm->Get_FD0().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// FD1
 	if( Path_Valid(vm->Get_FD1().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "Floppy B" );
 		tmp.Path = vm->Get_FD1().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// CD-ROM
 	if( Path_Valid(vm->Get_CD_ROM().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "CD-ROM" );
 		tmp.Path = vm->Get_CD_ROM().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// HDA
 	if( Path_Valid(vm->Get_HDA().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = true;
 		tmp.Name = tr( "HDA (Primary Master)" );
 		tmp.Path = vm->Get_HDA().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// HDB
 	if( Path_Valid(vm->Get_HDB().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = true;
 		tmp.Name = tr( "HDB (Primary Slave)" );
 		tmp.Path = vm->Get_HDB().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// HDC
 	if( Path_Valid(vm->Get_HDC().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = true;
 		tmp.Name = tr( "HDC (Secondary Master)" );
 		tmp.Path = vm->Get_HDC().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// HDD
 	if( Path_Valid(vm->Get_HDD().Get_File_Name()) )
 	{
 		tmp.Hard_Drive = true;
 		tmp.Name = tr( "HDD (Secondary Slave)" );
 		tmp.Path = vm->Get_HDD().Get_File_Name();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// ROM File
 	if( Path_Valid(vm->Get_ROM_File()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "ROM File" );
 		tmp.Path = vm->Get_ROM_File();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// MTDBlock File
 	if( Path_Valid(vm->Get_MTDBlock_File()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "MTDBlock File" );
 		tmp.Path = vm->Get_MTDBlock_File();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// SD Card File
 	if( Path_Valid(vm->Get_SecureDigital_File()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "SD Card File" );
 		tmp.Path = vm->Get_SecureDigital_File();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// PFlash File
 	if( Path_Valid(vm->Get_PFlash_File()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "PFlash File" );
 		tmp.Path = vm->Get_PFlash_File();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// bzImage
 	if( Path_Valid(vm->Get_bzImage_Path()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "Kernel bzImage" );
 		tmp.Path = vm->Get_bzImage_Path();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// Initrd
 	if( Path_Valid(vm->Get_Initrd_Path()) )
 	{
 		tmp.Hard_Drive = false;
 		tmp.Name = tr( "Kernel Initrd" );
 		tmp.Path = vm->Get_Initrd_Path();
-		
+
 		File_List_Items << tmp;
 		Add_To_Files_List( tmp );
 	}
-	
+
 	// Serial Ports
 	if( vm->Get_Serial_Ports().count() > 0 )
 	{
 		QList<VM_Port> tmp_port = vm->Get_Serial_Ports();
-		
+
 		for( int ix = 0; ix < tmp_port.count(); ix++ )
 		{
 			if( tmp_port[ix].Get_Port_Redirection() == VM::PR_file )
@@ -284,19 +284,19 @@ void Delete_VM_Files_Window::Set_VM( Virtual_Machine *vm )
 					tmp.Hard_Drive = false;
 					tmp.Name = tr( "Serial Port Redirection" );
 					tmp.Path = tmp_port[ix].Get_Parametrs_Line();
-					
+
 					File_List_Items << tmp;
 					Add_To_Files_List( tmp );
 				}
 			}
 		}
 	}
-	
+
 	// Parallel Ports
 	if( vm->Get_Parallel_Ports().count() > 0 )
 	{
 		QList<VM_Port> tmp_port = vm->Get_Parallel_Ports();
-		
+
 		for( int ix = 0; ix < tmp_port.count(); ix++ )
 		{
 			if( tmp_port[ix].Get_Port_Redirection() == VM::PR_file )
@@ -306,29 +306,29 @@ void Delete_VM_Files_Window::Set_VM( Virtual_Machine *vm )
 					tmp.Hard_Drive = false;
 					tmp.Name = tr( "Parallel Port Redirection" );
 					tmp.Path = tmp_port[ix].Get_Parametrs_Line();
-					
+
 					File_List_Items << tmp;
 					Add_To_Files_List( tmp );
 				}
 			}
 		}
 	}
-	
+
 	// Storage Devices
 	if( vm->Get_Storage_Devices_List().count() > 0 )
 	{
 		QList<VM_Native_Storage_Device> tmp_dev = vm->Get_Storage_Devices_List();
-		
+
 		for( int ix = 0; ix < tmp_dev.count(); ix++ )
 		{
 			if( Path_Valid(tmp_dev[ix].Get_File_Path()) )
 			{
 				if( tmp_dev[ix].Get_Media() == VM::DM_Disk ) tmp.Hard_Drive = true;
 				else tmp.Hard_Drive = false;
-				
+
 				tmp.Name = tr( "Storage Device" );
 				tmp.Path = tmp_dev[ix].Get_File_Path();
-				
+
 				File_List_Items << tmp;
 				Add_To_Files_List( tmp );
 			}
@@ -406,12 +406,12 @@ void Delete_VM_Files_Window::done(int r)
 void Delete_VM_Files_Window::on_RB_Show_HDD_toggled( bool checked )
 {
 	static bool old = false;
-	
+
 	if( old == checked ) return;
 	else old = checked;
-	
+
 	Clear_List();
-	
+
 	for( int ix = 0; ix < File_List_Items.count(); ix++ )
 	{
 		if( checked )
@@ -429,19 +429,19 @@ void Delete_VM_Files_Window::on_RB_Show_HDD_toggled( bool checked )
 void Delete_VM_Files_Window::Add_To_Files_List( const File_List_Item &item )
 {
 	if( item.Name.isEmpty() || item.Path.isEmpty() ) return;
-	
+
 	QTableWidgetItem *it = new QTableWidgetItem();
 	ui.Files_List->insertRow( ui.Files_List->rowCount() );
-	
+
 	// CheckBox
 	it->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
 	it->setCheckState( Qt::Checked );
 	ui.Files_List->setItem( ui.Files_List->rowCount()-1, 0, it );
-	
+
 	// Name
 	it = new QTableWidgetItem( item.Name );
 	ui.Files_List->setItem( ui.Files_List->rowCount()-1, 1, it );
-	
+
 	// Path
 	it = new QTableWidgetItem( item.Path );
 	ui.Files_List->setItem( ui.Files_List->rowCount()-1, 2, it );
@@ -452,7 +452,7 @@ bool Delete_VM_Files_Window::Path_Valid( const QString &path )
 	if( path.isEmpty() ) return false;
 	if( ! QFile::exists(path) ) return false;
 	if( path.startsWith("/dev/") ) return false; // FIXME Windows version
-	
+
 	return true; // All OK
 }
 

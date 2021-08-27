@@ -28,19 +28,19 @@
 class Snapshot_Properties_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Snapshot_Properties_Window( QWidget *parent = 0 );
-		
+
 		QString Get_Snapshot_Name() const;
 		void Set_Snapshot_Name( const QString &name );
-		
+
 		QString Get_Snapshot_Description() const;
 		void Set_Snapshot_Description( const QString &desc );
-	
+
 	private slots:
 		void done(int);
-	
+
 	private:
 		Ui::Snapshot_Properties_Window ui;
 };

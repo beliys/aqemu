@@ -39,11 +39,10 @@ Inspect_QEMU_Arguments::Inspect_QEMU_Arguments( Virtual_Machine* vm, QWidget *pa
 	ui.setupUi( this );
 
 	QString line = "";
-	
+
     vm->Get_QEMU_Args();
 }
 
 Inspect_QEMU_Arguments::~Inspect_QEMU_Arguments()
 {
 }
-

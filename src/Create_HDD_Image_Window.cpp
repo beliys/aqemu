@@ -31,7 +31,7 @@ Create_HDD_Image_Window::Create_HDD_Image_Window( QWidget *parent )
 	: QDialog( parent )
 {
 	ui.setupUi( this );
-	
+
 	resize( width(), minimumSizeHint().height() );
 }
 
@@ -51,10 +51,10 @@ void Create_HDD_Image_Window::Set_Image_Info( VM::Disk_Info info )
 {
 	// This function word only in format mode. Change button caption
 	ui.Button_Create->setText( tr("F&ormat") );
-	
+
 	// Format
 	int format_ix = ui.CB_Format->findText( info.Disk_Format );
-	
+
 	if( format_ix != -1 )
 	{
 		ui.CB_Format->setCurrentIndex( format_ix );
@@ -64,23 +64,23 @@ void Create_HDD_Image_Window::Set_Image_Info( VM::Disk_Info info )
 		AQError( "void Create_HDD_Image_Window::Set_Image_Info( VM::Disk_Info info )",
 				 "Cannot Find Format" );
 	}
-	
+
 	// Size
 	switch( info.Virtual_Size.Suffix )
 	{
 		case VM::Size_Suf_Mb: // MB
 			ui.CB_Suffix->setCurrentIndex( 1 );
 			break;
-			
+
 		case VM::Size_Suf_Gb: // GB
 			ui.CB_Suffix->setCurrentIndex( 2 );
 			break;
-			
+
 		default: // KG
 			ui.CB_Suffix->setCurrentIndex( 0 );
 			break;
 	}
-	
+
 	ui.SB_Size->setValue( info.Virtual_Size.Size );
 }
 
@@ -94,7 +94,7 @@ void Create_HDD_Image_Window::on_Button_Browse_Base_Image_clicked()
 	QString fileName = QFileDialog::getOpenFileName( this, tr("Select Base HDD Image File"),
 													 Get_Last_Dir_Path(ui.Edit_Base_Image_File_Name->text()),
 													 tr("All Files (*);;Images Files (*.img *.qcow *.qcow2 *.wmdk)") );
-	
+
 	if( ! fileName.isEmpty() )
 		ui.Edit_Base_Image_File_Name->setText( QDir::toNativeSeparators(fileName) );
 }
@@ -104,7 +104,7 @@ void Create_HDD_Image_Window::on_Button_Browse_New_Image_clicked()
 	QString fileName = QFileDialog::getSaveFileName( this, tr("Create HDD Image File"),
 													 Get_Last_Dir_Path(ui.Edit_File_Name->text()),
 													 tr("All Files (*);;Images Files (*.img *.qcow *.qcow2 *.wmdk)") );
-	
+
 	if( ! fileName.isEmpty() )
 		ui.Edit_File_Name->setText( QDir::toNativeSeparators(fileName) );
 }
@@ -128,33 +128,33 @@ void Create_HDD_Image_Window::on_Button_Create_clicked()
 		AQGraphic_Warning( tr("Error!"), tr("Image File Name is Empty!") );
 		return;
 	}
-	
+
 	if( ui.SB_Size->value() < 1 || ui.SB_Size->value() > 1024 )
 	{
 		AQGraphic_Warning( tr("Error!"), tr("Invalid image size!") );
 		return;
 	}
-	
+
 	bool Create_OK = false;
-	
+
 	VM::Device_Size hd_size;
 	hd_size.Size = ui.SB_Size->value();
-	
+
 	switch( ui.CB_Suffix->currentIndex() )
 	{
 		case 1: // MB
 			hd_size.Suffix = VM::Size_Suf_Mb;
 			break;
-			
+
 		case 2: // GB
 			hd_size.Suffix = VM::Size_Suf_Gb;
 			break;
-			
+
 		default: // KG
 			hd_size.Suffix= VM::Size_Suf_Kb;
 			break;
 	}
-	
+
 	if( ui.CH_Base_Image->isChecked() )
 	{
 		if( ! QFile::exists(ui.Edit_Base_Image_File_Name->text()) )
@@ -173,7 +173,7 @@ void Create_HDD_Image_Window::on_Button_Create_clicked()
 		Create_OK = Create_New_HDD_Image( false, "", ui.Edit_File_Name->text(),
 										  ui.CB_Format->currentText(), hd_size, true );
 	}
-	
+
 	if( Create_OK )
 	{
 		accept();

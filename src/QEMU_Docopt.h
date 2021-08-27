@@ -451,4 +451,3 @@ When using -nographic, press 'ctrl-a h' to get some help.)";
 */
 
 void parse_qemu( int argc, char *argv[] );
-

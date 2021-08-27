@@ -29,18 +29,18 @@
 class Add_Port_Window: public QDialog
 {
 	Q_OBJECT
-	
+
 	public:
 		Add_Port_Window( QWidget *parent = 0 );
-		
+
 		VM_Port Get_Port() const;
 		void Set_Port( const VM_Port &port );
-		
+
 	private slots:
 		void Connect_Slots();
 		void Show_Arg_Help();
 		void on_TB_Browse_clicked();
-		
+
 	private:
 		Ui::Add_Port_Window ui;
 };

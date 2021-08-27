@@ -38,7 +38,7 @@ public:
 
 private slots:
 	void done(int);
-	void on_Button_Browse_clicked();	
+	void on_Button_Browse_clicked();
 	void on_All_Icons_List_itemDoubleClicked( QListWidgetItem *item );
 
 private:
