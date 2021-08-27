@@ -1417,7 +1417,6 @@ void Emulator::Set_Type( VM::Emulator_Type type )
 		QEMU_Binary_Names << "qemu-system-mips64el";
 		QEMU_Binary_Names << "qemu-system-ppc";
 		QEMU_Binary_Names << "qemu-system-ppc64";
-		QEMU_Binary_Names << "qemu-system-ppcemb";
 		QEMU_Binary_Names << "qemu-system-sh4";
 		QEMU_Binary_Names << "qemu-system-sh4eb";
 		QEMU_Binary_Names << "qemu-system-sparc";

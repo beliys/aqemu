@@ -745,16 +745,6 @@ bool System_Info::Update_VM_Computers_List()
 	System_Info::Emulator_QEMU_2_0[ "qemu-system-ppc" ] = ad;
 
 	ad = Available_Devices();
-	ad.System = Device_Map( "Power PC EMB 32Bit", "qemu-system-ppcemb" );
-	ad.CPU_List += CPU_PPC;
-	ad.Machine_List += Machine_PPC_0_10_0;
-	ad.Network_Card_List += Network_Card_PPC;
-	ad.Video_Card_List += QEMU_Video_Cards_v0_10_0;
-	ad.Audio_Card_List = Audio_Card_PPC;
-	ad.PSO_Initial_Graphic_Mode = true;
-	System_Info::Emulator_QEMU_2_0[ "qemu-system-ppcemb" ] = ad;
-
-	ad = Available_Devices();
 	ad.System = Device_Map( "Power PC 64Bit", "qemu-system-ppc64" );
 
 	QList<Device_Map> CPU_PPC_64 = CPU_PPC;
@@ -1138,7 +1128,6 @@ QMap<QString, QString> System_Info::Find_QEMU_Binary_Files( const QString &path 
 	emulFiles[ "qemu-system-mipsel" ] = "";
 	emulFiles[ "qemu-system-ppc" ] = "";
 	emulFiles[ "qemu-system-ppc64" ] = "";
-	emulFiles[ "qemu-system-ppcemb" ] = "";
 	emulFiles[ "qemu-system-sh4" ] = "";
 	emulFiles[ "qemu-system-sh4eb" ] = "";
 	emulFiles[ "qemu-system-sparc" ] = "";
